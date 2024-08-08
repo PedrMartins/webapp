@@ -1,7 +1,7 @@
 name: import_data_IoTree
 
 on:  
-  #workflow_dispatch:
+  workflow_dispatch:
   #schedule:
     #- cron: '0 0 1 * *'  # Atualiza no primeiro dia de cada mês https://crontab.guru
   
