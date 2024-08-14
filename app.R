@@ -7,143 +7,21 @@ library (dplyr)
 library(markdown)
 source("data_update.R")
 source("funcao_processamento.R")
+source("co2.R")
+source("umidade.R")
+source("temperatura.R")
+source("variable.R")
+
 
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
-              navbarPage( "IoTree",
-                          tabPanel("Temperature", #titulo da aba
-                                   sidebarLayout( #layout
-
-                                     sidebarPanel( #painel lateral
-                                       radioButtons(inputId = "nivel",
-                                                    label = "Mean Nivel",
-                                                    choices =  c("Hour"="H",
-                                                                 "Day"="D",
-                                                                 "Month"="M")),
-                                       selectInput(inputId = "day",
-                                                   label = "Day",
-                                                   choices = unique(sort(pipae7$D)),
-                                                   selected = "15",
-                                                   width = "100px"),
-                                       selectInput(inputId = "month",
-                                                   label = "Month",
-                                                   choices = unique(pipae7$M),
-                                                   width = "100px"),
-                                       selectInput(inputId = "year",
-                                                   label = "Year",
-                                                   choices = unique(pipae7$Y),
-                                                   width = "100px"),
-                                       radioButtons(inputId= "par",
-                                                   label = "Parcel",
-                                                   choiceValues =  unique (pipae7$parcela),
-                                                   choiceNames = c("Parcel 1", "Parcel 2"),
-                                                   selected = "par1"),
-                                       width = 2
-
-                                     ),#inputs
-
-                                     mainPanel (
-                                       plotOutput(outputId = "TemperatureID")
-                                     ) #Main Panel parte central em geral é onde se tem ooutput
-                                   )#sidebar layout end
-                          ), #tabpanel1 end temperatura
-                          tabPanel ("Moisture",
-                                    sidebarLayout( #layout
-
-                                      sidebarPanel( #painel lateral
-                                        radioButtons(inputId = "nivelmoisture",
-                                                     label = "Mean Nivel",
-                                                     choices =  c("Hour"="H",
-                                                                  "Day"="D",
-                                                                  "Month"="M")),
-                                        selectInput(inputId = "daymoisture",
-                                                    label = "Day",
-                                                    choices = unique(sort(pipae7$D)),
-                                                    selected = "15",
-                                                    width = "100px"),
-                                        selectInput(inputId = "monthmoisture",
-                                                    label = "Month",
-                                                    choices = unique(pipae7$M),
-                                                    selected = " ",
-                                                    width = "100px"),
-                                        selectInput(inputId = "yearmoisture",
-                                                    label = "Year",
-                                                    choices = unique(pipae7$Y),
-                                                    selected = " ",
-                                                    width = "100px"),
-                                        radioButtons(inputId= "parmoisture",
-                                                     label = "Parcel",
-                                                     choiceValues =  unique (pipae7$parcela),
-                                                     choiceNames = c("Parcel 1", "Parcel 2"),
-                                                     selected = "par1"),
-                                        width = 2
-                                      ), #inputs end
-
-                                      mainPanel (
-                                        plotOutput(outputId = "MoistureID")
-                                      ) #Main Panel parte central em geral é onde se tem ooutput
-                                    )#sidebar end
-                          ), #tabpanel2 end umidade
-                          tabPanel("CO2",
-                                   sidebarLayout (  #layout
-                                     sidebarPanel(  #painel lateral
-                                       radioButtons(inputId = "nivelco2",
-                                                    label = "Mean Nivel",
-                                                    choices =  c("Hour"="H",
-                                                                 "Day"="D",
-                                                                 "Month"="M")),
-                                       selectInput(inputId = "dayco2",
-                                                   label = "Day",
-                                                   choices = unique(sort(pipae7$D)),
-                                                   selected = "15",
-                                                   width = "100px"),
-                                       selectInput(inputId = "monthco2",
-                                                   label = "Month",
-                                                   choices = unique(pipae7$M),
-                                                   selected = " ",
-                                                   width = "100px"),
-                                       selectInput(inputId = "yearco2",
-                                                   label = "Year",
-                                                   choices = unique(pipae7$Y),
-                                                   selected = " ",
-                                                   width = "100px"),
-                                       radioButtons(inputId= "parco2",
-                                                    label = "Parcel",
-                                                    choiceValues =  unique (pipae7$parcela),
-                                                    choiceNames = c("Parcel 1", "Parcel 2"),
-                                                    selected = "par1"),
-                                       width = 2
-                                     ), #sidebarpanel end
-                                     mainPanel (
-                                       plotOutput (outputId = "CO2ID")
-                                     )#mainplanel end
-                                   ) #sidebar layout end
-                          ), #tabpanel2 end co2
-                          tabPanel ("Variable",
-                                    sidebarLayout(
-                                      sidebarPanel (
-                                        checkboxGroupInput (
-                                          inputId = "var",
-                                          label = "Variable",
-                                          choices = c ("CO2" ="CO2",
-                                                       "Temperature" = "temp",
-                                                       "Moisture"= "umi"),
-                                          selected = "temp"
-                                        ),
-                                        checkboxGroupInput(inputId= "parVar",
-                                                      label = "Parcel",
-                                                      choiceValues =  unique (pipae7$parcela),
-                                                      choiceNames = c("Parcel 1", "Parcel 2"),
-                                                      selected = "par1"),
-                                        width = 3
-                                      ),
-                                      mainPanel(
-                                        plotOutput(outputId = "boxplotvarID")
-                                      )
-                                    )
-
-                          )
-                          , #"será um boxplot com parando parcelas"#tabpanel2 end Variáveis (será boxplot)
+               navbarPage( "IoTree",
+                          temperatura,
+                          umidade,
+                          CO2,
+                          variable,
+                           #"será um boxplot com parando parcelas"#tabpanel2 end Variáveis (será boxplot)
+                          tabPanel ("Status", "emc onstrução"),
                           tabPanel("About",
                                    div(includeMarkdown("about.md"),
                                        align="justify"))# "Markdown com informações do projeto possivelmente com o script tbm"
@@ -430,9 +308,9 @@ server <- function(input, output, session) {
 
   }, res= 96)
   box_plot <- reactive ({
+
     req(input$var)
 
-    pipae7 []
   })
 
   output$boxplotvarID <-renderPlot({
@@ -459,20 +337,19 @@ server <- function(input, output, session) {
     pipae7 = na.omit(pipae7)
     vars <- input$var
     if (length(vars) > 0) {
-      par(mfrow = c(1, length(vars)), bty = "n",
+      par(mfrow = c(1,length(vars)), bty = "n",
           bg = "grey99")
       col = colorRampPalette(c("violetred2", "lightblue"))
       for (var in vars) {
         boxplot(as.formula(paste(var, "~ parcela")),
                 data = pipae7, main = var, col =
                   col(length(unique(pipae7$parcela))),
-                pch="*")
+                pch="*") #dicionariuo = var (estudar) xlab=dict[var]
       }
     }
   }, res = 96)
 }
 
 shinyApp(ui=ui, server = server)
-
 
 
