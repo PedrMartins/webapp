@@ -15,21 +15,20 @@ source("variable.R")
 
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
-               navbarPage( "IoTree",
+              navbarPage( "IoTree",
                           temperatura,
                           umidade,
                           CO2,
                           variable,
-                           #"será um boxplot com parando parcelas"#tabpanel2 end Variáveis (será boxplot)
-                          tabPanel ("Status", "emc onstrução"),
+                          tabPanel ("Status",
+                                    h3("Sensor's status"),
+                                    dataTableOutput(outputId = "table"),
+                                       ),
                           tabPanel("About",
                                    div(includeMarkdown("about.md"),
-                                       align="justify"))# "Markdown com informações do projeto possivelmente com o script tbm"
+                                       align="justify"))
               )# navpage end
 )
-
-
-
 
 server <- function(input, output, session) {
 
@@ -307,11 +306,6 @@ server <- function(input, output, session) {
            lty = c(2,3,1), bty = "n")
 
   }, res= 96)
-  box_plot <- reactive ({
-
-    req(input$var)
-
-  })
 
   output$boxplotvarID <-renderPlot({
     parcels <- input$parVar
@@ -339,17 +333,44 @@ server <- function(input, output, session) {
     if (length(vars) > 0) {
       par(mfrow = c(1,length(vars)), bty = "n",
           bg = "grey99")
-      col = colorRampPalette(c("violetred2", "lightblue"))
+      col = colorRampPalette(c("darkred", "lightblue"))
       for (var in vars) {
         boxplot(as.formula(paste(var, "~ parcela")),
                 data = pipae7, main = var, col =
                   col(length(unique(pipae7$parcela))),
-                pch="*") #dicionariuo = var (estudar) xlab=dict[var]
+                pch="*")
+        #dicionariuo = var (estudar) xlab=dict[var]
       }
     }
   }, res = 96)
+
+  output$table <- renderDataTable({
+    pipaes <- c(unique(pipae7$sensor))
+    status <- data.frame()
+    for (pipae in pipaes) {
+
+      sensor=pipae7 [pipae7$sensor==pipae,]
+      diff <- time_length(Sys.Date()-
+                            sensor$Data [length(sensor$Data)],
+                          unit="day")
+
+      if (diff > 0) {
+       test <- data.frame(sensor=as.character (pipae),
+                           dias=sensor$Data [length(sensor$Data)],
+                           status="No")
+      }else {
+        test  <- data.frame(sensor=as.character (pipae),
+                            dias=as.character(sensor$Data [length(sensor$Data)]),
+                            status="Yes")
+      }
+      status <-  rbind(status,test)
+    }
+    names (status) <- c("Sensor","Last Received","Working fine")
+    status
+  })
 }
 
 shinyApp(ui=ui, server = server)
+
 
 
