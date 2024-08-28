@@ -5,6 +5,8 @@ library(stringr)
 library(lubridate)
 library (dplyr)
 library(markdown)
+library(leaflet)
+library(sf)
 source("data_update.R")
 source("funcao_processamento.R")
 source("co2.R")
@@ -16,6 +18,9 @@ source("variable.R")
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
               navbarPage( "IoTree",
+                          tabPanel("About",
+                                   div(includeMarkdown("about.md"),
+                                       align="justify")),
                           temperatura,
                           umidade,
                           CO2,
@@ -23,14 +28,17 @@ ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
                           tabPanel ("Status",
                                     h3("Sensor's status"),
                                     dataTableOutput(outputId = "table"),
-                                       ),
-                          tabPanel("About",
-                                   div(includeMarkdown("about.md"),
-                                       align="justify"))
-              )# navpage end
+                          ),
+                          tabPanel("Location",
+                                   leafletOutput(
+                                     "MapsPipae",
+                                     height = 600)
+                                   )
+                          )# navpage end
 )
 
 server <- function(input, output, session) {
+
 
   output$TemperatureID <- renderPlot({
     pipae7 = pipae7 [pipae7$parcela ==  input$par,]
@@ -51,7 +59,9 @@ server <- function(input, output, session) {
                                                  time=pipae7$Hora,
                                                  media_nivel = input$nivel,
                                                  variavel = "temperatura")
-    par( bty ="n", bg = "grey99", las =1)
+    par( bty ="n", bg = "grey99", las =1,
+         family="serif")
+
     if (input$nivel == "H"){
       pipae_mediatemperatura$nivel= pipae_mediatemperatura$H
       escala = range(pipae_mediatemperatura$media_temperatura)
@@ -127,6 +137,7 @@ server <- function(input, output, session) {
 
   }, res= 96)
 
+
   output$MoistureID <- renderPlot({
     pipae7 = pipae7 [pipae7$parcela ==  input$parmoisture,]
     if (input$nivelmoisture == "H") {
@@ -145,7 +156,8 @@ server <- function(input, output, session) {
                                              time=pipae7$Hora,
                                              media_nivel = input$nivelmoisture,
                                              variavel = "umidade")
-    par( bty ="n", bg = "grey99", las =1)
+    par( bty ="n", bg = "grey99", las =1,
+         family="serif")
 
     if (input$nivelmoisture == "H"){
       pipae_mediaumidade$nivel= pipae_mediaumidade$H
@@ -201,8 +213,8 @@ server <- function(input, output, session) {
 
       plot (media_umidade~nivel, data=pipae_mediaumidade,
             type="n",
-            ylab="Mean temperature ºC", xlab= "Months",
-            main="Temperature\nmean by month",
+            ylab="Mean Moisture %", xlab= "Months",
+            main="Moisture\nmean by month",
             ylim = c(min, max),
             xlim=c(1,12))
 
@@ -235,8 +247,9 @@ server <- function(input, output, session) {
                                          time=pipae7$Hora,
                                          media_nivel = input$nivelco2,
                                          variavel = "co2")
-
-    par(bty ="n", bg = "grey99", las =1)
+    "serif"
+    par(bty ="n", bg = "grey99", las =1,
+        family="serif")
 
 
     if (input$nivelco2 == "H"){
@@ -291,9 +304,9 @@ server <- function(input, output, session) {
 
       plot (media_co2~nivel, data=pipae_mediaCO2,
             type="n",
-            ylab="Mean temperature ºC",
+            ylab="Mean CO2 ppm",
             xlab= "Months",
-            main="Temperature\nmean by month",
+            main="CO2\nmean by month",
             ylim = c(min, max) ,xlim=c(1,12))
 
       lines(media_co2 ~nivel, data=pipae_mediaCO2 ,
@@ -332,7 +345,7 @@ server <- function(input, output, session) {
     vars <- input$var
     if (length(vars) > 0) {
       par(mfrow = c(1,length(vars)), bty = "n",
-          bg = "grey99")
+          bg = "grey99", family="serif")
       col = colorRampPalette(c("darkred", "lightblue"))
       for (var in vars) {
         boxplot(as.formula(paste(var, "~ parcela")),
@@ -355,7 +368,7 @@ server <- function(input, output, session) {
                           unit="day")
 
       if (diff > 0) {
-       test <- data.frame(sensor=as.character (pipae),
+        test <- data.frame(sensor=as.character (pipae),
                            dias=sensor$Data [length(sensor$Data)],
                            status="No")
       }else {
@@ -368,9 +381,35 @@ server <- function(input, output, session) {
     names (status) <- c("Sensor","Last Received","Working fine")
     status
   })
+
+  output$MapsPipae <- renderLeaflet ({
+    a <-  data.frame(lat = -23.565297,
+                     long=-46.728907)
+    leaflet() |>
+      addProviderTiles(
+        provider = providers$Esri.WorldImagery, group="Stallite View") |>
+      addProviderTiles(
+        "CartoDB.Positron",
+        group = "CartoDB.Positron"
+      ) |>
+      addProviderTiles("OpenStreetMap",
+                group = "Street Map") |>
+      addLayersControl(baseGroups = c("Satellite View",
+                                      "CartoDB.Positron",
+                                      "Street Map")) |>
+      addCircleMarkers(lat = -23.565297,
+                 lng = -46.728907,
+                 radius = 30,
+                 popup = paste(sep= "<br/>",
+                               "Forest Reserve of the Institute of Biosciences"),
+                 opacity = 0.10,
+                 label="IoTree")
+  })
 }
 
 shinyApp(ui=ui, server = server)
 
 
 
+#Reserva Florestal do Instituto de
+#Biociências
