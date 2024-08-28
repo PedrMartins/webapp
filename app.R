@@ -388,10 +388,6 @@ server <- function(input, output, session) {
     leaflet() |>
       addProviderTiles(
         provider = providers$Esri.WorldImagery, group="Stallite View") |>
-      addProviderTiles(
-        "CartoDB.Positron",
-        group = "CartoDB.Positron"
-      ) |>
       addProviderTiles("OpenStreetMap",
                 group = "Street Map") |>
       addLayersControl(baseGroups = c("Satellite View",
