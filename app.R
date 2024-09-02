@@ -389,10 +389,9 @@ server <- function(input, output, session) {
       addProviderTiles(
         provider = providers$Esri.WorldImagery, group="Stallite View") |>
       addProviderTiles("OpenStreetMap",
-                group = "Street Map") |>
+                group = "Street View") |>
       addLayersControl(baseGroups = c("Satellite View",
-                                      "CartoDB.Positron",
-                                      "Street Map")) |>
+                                      "Street View")) |>
       addCircleMarkers(lat = -23.565297,
                  lng = -46.728907,
                  radius = 30,
