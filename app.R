@@ -14,7 +14,6 @@ source("umidade.R")
 source("temperatura.R")
 source("variable.R")
 
-
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
               navbarPage( "IoTree",
