@@ -14,6 +14,8 @@ source("umidade.R")
 source("temperatura.R")
 source("variable.R")
 
+
+
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
               navbarPage( "IoTree",
@@ -40,22 +42,22 @@ server <- function(input, output, session) {
 
 
   output$TemperatureID <- renderPlot({
-    pipae7 = pipae7 [pipae7$parcela ==  input$par,]
+    pipae_all = pipae_all [pipae_all$parcela ==  input$par,]
     if (input$nivel == "H") {
-      pipae7 = pipae7 [ pipae7$D == input$day &
-                          pipae7$M == input$month &
-                          pipae7$Y == input$year,]
+      pipae_all = pipae_all [ pipae_all$D == input$day &
+                          pipae_all$M == input$month &
+                          pipae_all$Y == input$year,]
     } else if (input$nivel == "M" ) {
-      pipae7 = pipae7 [pipae7$Y == input$year,]
+      pipae_all = pipae_all [pipae_all$Y == input$year,]
     } else {
-      pipae7 = pipae7 [ pipae7$M == input$month &
-                          pipae7$Y == input$year,]
+      pipae_all = pipae_all [ pipae_all$M == input$month &
+                          pipae_all$Y == input$year,]
     }
 
-    pipae_mediatemperatura = get_dados_separados(pipae7,
-                                                 pipae7$Temperatura,
-                                                 date= pipae7$Data,
-                                                 time=pipae7$Hora,
+    pipae_mediatemperatura = get_dados_separados(pipae_all,
+                                                 pipae_all$Temperatura,
+                                                 date= pipae_all$Data,
+                                                 time=pipae_all$Hora,
                                                  media_nivel = input$nivel,
                                                  variavel = "temperatura")
     par( bty ="n", bg = "grey99", las =1,
@@ -138,21 +140,21 @@ server <- function(input, output, session) {
 
 
   output$MoistureID <- renderPlot({
-    pipae7 = pipae7 [pipae7$parcela ==  input$parmoisture,]
+    pipae_all = pipae_all [pipae_all$parcela ==  input$parmoisture,]
     if (input$nivelmoisture == "H") {
-      pipae7 = pipae7 [ pipae7$D == input$daymoisture &
-                          pipae7$M == input$monthmoisture &
-                          pipae7$Y == input$yearmoisture,]
+      pipae_all = pipae_all [ pipae_all$D == input$daymoisture &
+                          pipae_all$M == input$monthmoisture &
+                          pipae_all$Y == input$yearmoisture,]
     } else if (input$nivelmoisture == "M" ) {
-      pipae7 = pipae7 [pipae7$Y == input$yearmoisture,]
+      pipae_all = pipae_all [pipae_all$Y == input$yearmoisture,]
     } else {
-      pipae7 = pipae7 [ pipae7$M == input$monthmoisture &
-                          pipae7$Y == input$yearmoisture,]
+      pipae_all = pipae_all [ pipae_all$M == input$monthmoisture &
+                          pipae_all$Y == input$yearmoisture,]
     }
 
-    pipae_mediaumidade = get_dados_separados(pipae7, pipae7$Umidade,
-                                             date= pipae7$Data,
-                                             time=pipae7$Hora,
+    pipae_mediaumidade = get_dados_separados(pipae_all, pipae_all$Umidade,
+                                             date= pipae_all$Data,
+                                             time=pipae_all$Hora,
                                              media_nivel = input$nivelmoisture,
                                              variavel = "umidade")
     par( bty ="n", bg = "grey99", las =1,
@@ -229,21 +231,21 @@ server <- function(input, output, session) {
   },res=96)
 
   output$CO2ID <- renderPlot({
-    pipae7 = pipae7 [pipae7$parcela ==  input$parco2,]
+    pipae_all = pipae_all [pipae_all$parcela ==  input$parco2,]
     if (input$nivelco2 == "H") {
-      pipae7 = pipae7 [ pipae7$D == input$dayco2 &
-                          pipae7$M == input$monthco2 &
-                          pipae7$Y == input$yearco2,]
+      pipae_all = pipae_all [ pipae_all$D == input$dayco2 &
+                          pipae_all$M == input$monthco2 &
+                          pipae_all$Y == input$yearco2,]
     } else if (input$nivelco2 == "M" ) {
-      pipae7 = pipae7 [pipae7$Y == input$yearco2,]
+      pipae_all = pipae_all [pipae_all$Y == input$yearco2,]
     } else {
-      pipae7 = pipae7 [ pipae7$M == input$monthco2 &
-                          pipae7$Y == input$yearco2,]
+      pipae_all = pipae_all [ pipae_all$M == input$monthco2 &
+                          pipae_all$Y == input$yearco2,]
     }
 
-    pipae_mediaCO2 = get_dados_separados(pipae7, pipae7$CO2,
-                                         date= pipae7$Data,
-                                         time=pipae7$Hora,
+    pipae_mediaCO2 = get_dados_separados(pipae_all, pipae_all$CO2,
+                                         date= pipae_all$Data,
+                                         time=pipae_all$Hora,
                                          media_nivel = input$nivelco2,
                                          variavel = "co2")
     "serif"
@@ -328,19 +330,19 @@ server <- function(input, output, session) {
       )
     }
     for (parcel in parcels) {
-      result <- rbind(result, pipae7[pipae7$parcela == parcel, ])
+      result <- rbind(result, pipae_all[pipae_all$parcela == parcel, ])
     }
 
-    pipae7 <- result
+    pipae_all <- result
 
     excluir <- c("Luminosidade...", "UV...","Data", "Hora",
                  "H","D","M","Y","Pressão","m" )
-    pipae7 <- pipae7[,!(names(pipae7)%in% excluir)]
-    names (pipae7) <-  c("CO2",
+    pipae_all <- pipae_all[,!(names(pipae_all)%in% excluir)]
+    names (pipae_all) <-  c("CO2",
                          "temp",
                          "umi",
                          "parcela")
-    pipae7 = na.omit(pipae7)
+    pipae_all = na.omit(pipae_all)
     vars <- input$var
     if (length(vars) > 0) {
       par(mfrow = c(1,length(vars)), bty = "n",
@@ -348,8 +350,8 @@ server <- function(input, output, session) {
       col = colorRampPalette(c("darkred", "lightblue"))
       for (var in vars) {
         boxplot(as.formula(paste(var, "~ parcela")),
-                data = pipae7, main = var, col =
-                  col(length(unique(pipae7$parcela))),
+                data = pipae_all, main = var, col =
+                  col(length(unique(pipae_all$parcela))),
                 pch="*")
         #dicionariuo = var (estudar) xlab=dict[var]
       }
@@ -357,11 +359,11 @@ server <- function(input, output, session) {
   }, res = 96)
 
   output$table <- renderDataTable({
-    pipaes <- c(unique(pipae7$sensor))
+    pipaes <- c(unique(pipae_all$sensor))
     status <- data.frame()
     for (pipae in pipaes) {
 
-      sensor=pipae7 [pipae7$sensor==pipae,]
+      sensor=pipae_all [pipae_all$sensor==pipae,]
       diff <- time_length(Sys.Date()-
                             sensor$Data [length(sensor$Data)],
                           unit="day")

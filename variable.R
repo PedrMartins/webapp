@@ -11,7 +11,7 @@ variable <- tabPanel ("Variable",
               ),
               checkboxGroupInput(inputId= "parVar",
                                  label = "Parcel",
-                                 choiceValues =  unique (pipae7$parcela),
+                                 choiceValues =  unique (pipae_all$parcela),
                                  choiceNames = c("Parcel 1", "Parcel 2"),
                                  selected = "par1"),
               width = 3
