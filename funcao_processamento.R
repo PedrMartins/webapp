@@ -3,7 +3,6 @@ library (dplyr)
 
 
 
-
 get_dados_separados = function ( data, x, date=NULL, time=NULL,
                                 media_nivel = "D", variavel = "co2"
                                 ,  ...) {

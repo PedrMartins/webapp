@@ -55,9 +55,9 @@ server <- function(input, output, session) {
     }
 
     pipae_mediatemperatura = get_dados_separados(pipae_all,
-                                                 pipae_all$Temperatura,
-                                                 date= pipae_all$Data,
-                                                 time=pipae_all$Hora,
+                                                 pipae_all$Temperature,
+                                                 date= pipae_all$Date,
+                                                 time=pipae_all$Time,
                                                  media_nivel = input$nivel,
                                                  variavel = "temperatura")
     par( bty ="n", bg = "grey99", las =1,
@@ -152,9 +152,9 @@ server <- function(input, output, session) {
                           pipae_all$Y == input$yearmoisture,]
     }
 
-    pipae_mediaumidade = get_dados_separados(pipae_all, pipae_all$Umidade,
-                                             date= pipae_all$Data,
-                                             time=pipae_all$Hora,
+    pipae_mediaumidade = get_dados_separados(pipae_all, pipae_all$Humidity,
+                                             date= pipae_all$Date,
+                                             time=pipae_all$Time,
                                              media_nivel = input$nivelmoisture,
                                              variavel = "umidade")
     par( bty ="n", bg = "grey99", las =1,
@@ -243,12 +243,11 @@ server <- function(input, output, session) {
                           pipae_all$Y == input$yearco2,]
     }
 
-    pipae_mediaCO2 = get_dados_separados(pipae_all, pipae_all$CO2,
-                                         date= pipae_all$Data,
-                                         time=pipae_all$Hora,
+    pipae_mediaCO2 = get_dados_separados(pipae_all, pipae_all$CO2_ppm,
+                                         date= pipae_all$Date,
+                                         time=pipae_all$Time,
                                          media_nivel = input$nivelco2,
                                          variavel = "co2")
-    "serif"
     par(bty ="n", bg = "grey99", las =1,
         family="serif")
 
@@ -266,7 +265,7 @@ server <- function(input, output, session) {
 
       plot (media_co2~nivel, data=pipae_mediaCO2,
             type="n",
-            ylab="Mean CO2 ppm", xlab= "Hours",
+            ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Hours",
             main="CO2\nmean by hour",
             ylim = c(min, max),
             xlim=c(0,23))
@@ -289,7 +288,7 @@ server <- function(input, output, session) {
 
       plot (media_co2~nivel, data=pipae_mediaCO2,
             type="n",
-            ylab="Mean CO2 ppm", xlab= "Days",
+            ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Days",
             main="CO2\nmean by day",
             ylim = c(min, max),
             xlim=c(0,23))
@@ -305,7 +304,7 @@ server <- function(input, output, session) {
 
       plot (media_co2~nivel, data=pipae_mediaCO2,
             type="n",
-            ylab="Mean CO2 ppm",
+            ylab=expression("Mean" ~ CO[2] ~ "ppm"),
             xlab= "Months",
             main="CO2\nmean by month",
             ylim = c(min, max) ,xlim=c(1,12))
@@ -359,22 +358,22 @@ server <- function(input, output, session) {
   }, res = 96)
 
   output$table <- renderDataTable({
-    pipaes <- c(unique(pipae_all$sensor))
+    pipaes <- c(unique(pipae_all$tag))
     status <- data.frame()
     for (pipae in pipaes) {
 
-      sensor=pipae_all [pipae_all$sensor==pipae,]
+      sensor=pipae_all [pipae_all$tag==pipae,]
       diff <- time_length(Sys.Date()-
-                            sensor$Data [length(sensor$Data)],
+                            sensor$Date [length(sensor$Date)],
                           unit="day")
 
       if (diff > 0) {
         test <- data.frame(sensor=as.character (pipae),
-                           dias=sensor$Data [length(sensor$Data)],
+                           dias=sensor$Date [length(sensor$Date)],
                            status="No")
       }else {
         test  <- data.frame(sensor=as.character (pipae),
-                            dias=as.character(sensor$Data [length(sensor$Data)]),
+                            dias=as.character(sensor$Date [length(sensor$Date)]),
                             status="Yes")
       }
       status <-  rbind(status,test)
@@ -406,6 +405,6 @@ server <- function(input, output, session) {
 shinyApp(ui=ui, server = server)
 
 
-
+head (pipae_all)
 #Reserva Florestal do Instituto de
 #Biociências

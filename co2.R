@@ -25,7 +25,7 @@ CO2 <- tabPanel("CO2",
              radioButtons(inputId= "parco2",
                           label = "Parcel",
                           choiceValues =  unique (pipae_all$parcela),
-                          choiceNames = c("Parcel 1", "Parcel 2"),
+                          choiceNames = c("Parcel 1", "Parcel 2", "Parcela 3"),
                           selected = "par1"),
              width = 2
            ), #sidebarpanel end
