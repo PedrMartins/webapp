@@ -14,7 +14,9 @@ source("umidade.R")
 source("temperatura.R")
 source("variable.R")
 
-
+pipae_par2 <- pipae_all[pipae_all$parcela=="par2"&
+                          pipae_all$D==20,]
+tail(pipae_par2)
 
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
@@ -65,10 +67,10 @@ server <- function(input, output, session) {
 
     if (input$nivel == "H"){
       pipae_mediatemperatura$nivel= pipae_mediatemperatura$H
-      escala = range(pipae_mediatemperatura$media_temperatura)
+      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
+      if (nrow(pipae_mediatemperatura) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
@@ -88,7 +90,7 @@ server <- function(input, output, session) {
 
     }else if (input$nivel=="D") {
       pipae_mediatemperatura$nivel= pipae_mediatemperatura$D
-      escala = range(pipae_mediatemperatura$media_temperatura)
+      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
       if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
@@ -112,7 +114,7 @@ server <- function(input, output, session) {
 
     } else {
       pipae_mediatemperatura$nivel=pipae_mediatemperatura$M
-      escala = range(pipae_mediatemperatura$media_temperatura)
+      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
 
@@ -162,10 +164,10 @@ server <- function(input, output, session) {
 
     if (input$nivelmoisture == "H"){
       pipae_mediaumidade$nivel= pipae_mediaumidade$H
-      escala = range(pipae_mediaumidade$media_umidade)
+      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
+      if (nrow(pipae_mediaumidade) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
@@ -186,7 +188,7 @@ server <- function(input, output, session) {
     } else if (input$nivelmoisture == "D") {
 
       pipae_mediaumidade$nivel= pipae_mediaumidade$D
-      escala = range(pipae_mediaumidade$media_umidade)
+      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
       if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
@@ -208,7 +210,7 @@ server <- function(input, output, session) {
             col = "darkblue")
     } else {
       pipae_mediaumidade$nivel=pipae_mediaumidade$M
-      escala = range(pipae_mediaumidade$media_umidade)
+      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
 
@@ -233,6 +235,7 @@ server <- function(input, output, session) {
   output$CO2ID <- renderPlot({
     pipae_all = pipae_all [pipae_all$parcela ==  input$parco2,]
     if (input$nivelco2 == "H") {
+
       pipae_all = pipae_all [ pipae_all$D == input$dayco2 &
                           pipae_all$M == input$monthco2 &
                           pipae_all$Y == input$yearco2,]
@@ -254,10 +257,10 @@ server <- function(input, output, session) {
 
     if (input$nivelco2 == "H"){
       pipae_mediaCO2$nivel= pipae_mediaCO2$H
-      escala = range(pipae_mediaCO2$media_co2)
+      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
       min = trunc (escala [1] - 100)
       max = trunc (escala [2] + 100)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
+      if (nrow(pipae_mediaCO2) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
@@ -270,14 +273,14 @@ server <- function(input, output, session) {
             ylim = c(min, max),
             xlim=c(0,23))
 
-      lines(media_co2~nivel, data=pipae_mediaCO2,
+      lines(media_colocal2~nivel, data=pipae_mediaCO2,
             lty = 5, lwd =4,
             col = "gray60")
 
 
     } else if (input$nivelco2 == "D") {
       pipae_mediaCO2$nivel= pipae_mediaCO2$D
-      escala = range(pipae_mediaCO2$media_co2)
+      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
       min = trunc (escala [1] -100)
       max = trunc (escala [2] + 100)
       if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
@@ -298,7 +301,7 @@ server <- function(input, output, session) {
             col = "gray60")
     } else {
       pipae_mediaCO2$nivel=pipae_mediaCO2$M
-      escala = range(pipae_mediaCO2$media_co2)
+      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
       min = trunc (escala [1] - 100)
       max = trunc (escala [2] + 100)
 
@@ -334,14 +337,12 @@ server <- function(input, output, session) {
 
     pipae_all <- result
 
-    excluir <- c("Luminosidade...", "UV...","Data", "Hora",
-                 "H","D","M","Y","Pressão","m" )
-    pipae_all <- pipae_all[,!(names(pipae_all)%in% excluir)]
-    names (pipae_all) <-  c("CO2",
-                         "temp",
-                         "umi",
-                         "parcela")
-    pipae_all = na.omit(pipae_all)
+
+
+    names (pipae_all)[c(3,5,6,17)] <-  c("temp",
+                              "umi",
+                              "CO2",
+                              "parcela")
     vars <- input$var
     if (length(vars) > 0) {
       par(mfrow = c(1,length(vars)), bty = "n",
@@ -404,7 +405,5 @@ server <- function(input, output, session) {
 
 shinyApp(ui=ui, server = server)
 
-
-head (pipae_all)
 #Reserva Florestal do Instituto de
 #Biociências

@@ -26,7 +26,7 @@ umidade <- tabPanel ("Moisture",
               radioButtons(inputId= "parmoisture",
                            label = "Parcel",
                            choiceValues =  unique (pipae_all$parcela),
-                           choiceNames = c("Parcel 1", "Parcel 2", "Parcela 3"),
+                           choiceNames = c("Parcel 1", "Parcel 2", "Parcela 3", "Parcela 4"),
                            selected = "par1"),
               width = 2,
               fluid = TRUE

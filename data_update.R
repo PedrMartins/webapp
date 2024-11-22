@@ -35,19 +35,24 @@ import_pipae <-  function(pipae = NULL){
 
 
       if (names(source[i]) %in%
-          c(paste("pipae", 1, sep=""))){
+          c(paste("pipae", 2, sep=""))){
         site$tag = rep (names(source[i]),
                         length(site$CO2_ppm))
         site$parcela = rep ("par2", length(site$CO2_ppm))
       } else if (names(source[i]) %in%
-                    c(paste("pipae", 7,sep=""))){
+                    c(paste("pipae", 1,sep=""))){
         site$tag = rep (names(source[i]),
                         length(site$CO2_ppm))
         site$parcela = rep ("par1", length(site$CO2_ppm))
-      } else {
+      } else if (names(source[i]) %in%
+                 c(paste("pipae", 7,sep=""))) {
         site$tag = rep (names(source[i]),
                         length(site$CO2_ppm))
         site$parcela = rep ("par3", length(site$CO2_ppm))
+      }else {
+        site$tag = rep (names(source[i]),
+                        length(site$CO2_ppm))
+        site$parcela = rep ("par4", length(site$CO2_ppm))
       }
       pipae_all <- rbind(pipae_all, site)
 
