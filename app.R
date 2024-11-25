@@ -234,6 +234,7 @@ server <- function(input, output, session) {
 
   output$CO2ID <- renderPlot({
     pipae_all = pipae_all [pipae_all$parcela ==  input$parco2,]
+
     if (input$nivelco2 == "H") {
 
       pipae_all = pipae_all [ pipae_all$D == input$dayco2 &
