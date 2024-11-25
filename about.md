@@ -1,7 +1,7 @@
 # IoTree 
 
 >O Projeto IoTree é um trabalho colaborativo entre
-[CiTi-Poli(USP)](https://www.lsi.usp.br/citi/) e [IB-USP](https://ib.usp.br/botanica.html) utilizando sensores
+[CiTi-Poli(USP)](https://www.lsi.usp.br/citi/) e [LAFIECO-USP](https://lafieco.ib.usp.br/) utilizando sensores
 climáticos para avaliar o microclima de florestas urbanas.
 Atualmente o projeto ocorre em um fragmento florestal urbano localizado na cidade universitária, São Paulo.
 

@@ -20,7 +20,7 @@ tail(pipae_par2)
 
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
-              navbarPage( "IoTree",
+              navbarPage( "Smart Forest",
                           tabPanel("About",
                                    div(includeMarkdown("about.md"),
                                        align="justify")),
