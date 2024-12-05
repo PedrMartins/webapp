@@ -14,7 +14,7 @@ The project is currently taking place in an urban forest fragment located in the
 ##### sensors 
 
 * [pulga](https://caninosloucos.org/pt/pulga-v2-pt/)
-* [CO2 sensor](https://www.mouser.com/ProductDetail/Sensirion/SCD30?qs=rrS6PyfT74fdywu4FxpYjQ%3D%3D&srsltid=AfmBOor3OL8C59_sZGS3TlNYT1-NUfhQceNQLViz_JEDC01B7H29gbrc) 
+* [CO<sub>2</sub> sensor](https://www.mouser.com/ProductDetail/Sensirion/SCD30?qs=rrS6PyfT74fdywu4FxpYjQ%3D%3D&srsltid=AfmBOor3OL8C59_sZGS3TlNYT1-NUfhQceNQLViz_JEDC01B7H29gbrc) 
 
 
 ---

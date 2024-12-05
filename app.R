@@ -270,11 +270,11 @@ server <- function(input, output, session) {
       plot (media_co2~nivel, data=pipae_mediaCO2,
             type="n",
             ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Hours",
-            main="CO2\nmean by hour",
+            main="CO\u2082\nmean by hour",
             ylim = c(min, max),
             xlim=c(0,23))
 
-      lines(media_colocal2~nivel, data=pipae_mediaCO2,
+      lines(media_co2~nivel, data=pipae_mediaCO2,
             lty = 5, lwd =4,
             col = "gray60")
 
@@ -293,7 +293,7 @@ server <- function(input, output, session) {
       plot (media_co2~nivel, data=pipae_mediaCO2,
             type="n",
             ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Days",
-            main="CO2\nmean by day",
+            main="CO\u2082\nmean by day",
             ylim = c(min, max),
             xlim=c(0,23))
 
@@ -310,7 +310,7 @@ server <- function(input, output, session) {
             type="n",
             ylab=expression("Mean" ~ CO[2] ~ "ppm"),
             xlab= "Months",
-            main="CO2\nmean by month",
+            main="CO\u2082\nmean by month",
             ylim = c(min, max) ,xlim=c(1,12))
 
       lines(media_co2 ~nivel, data=pipae_mediaCO2 ,
@@ -338,21 +338,19 @@ server <- function(input, output, session) {
 
     pipae_all <- result
 
-
-
     names (pipae_all)[c(3,5,6,17)] <-  c("temp",
                               "umi",
-                              "CO2",
-                              "parcela")
+                              "CO\u2082"="CO2",
+                              "parcel")
     vars <- input$var
     if (length(vars) > 0) {
       par(mfrow = c(1,length(vars)), bty = "n",
           bg = "grey99", family="serif")
       col = colorRampPalette(c("darkred", "lightblue"))
       for (var in vars) {
-        boxplot(as.formula(paste(var, "~ parcela")),
+        boxplot(as.formula(paste(var, "~ parcel")),
                 data = pipae_all, main = var, col =
-                  col(length(unique(pipae_all$parcela))),
+                  col(length(unique(pipae_all$parcel))),
                 pch="*")
         #dicionariuo = var (estudar) xlab=dict[var]
       }

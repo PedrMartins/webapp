@@ -1,4 +1,4 @@
-CO2 <- tabPanel("CO2",
+CO2 <- tabPanel("CO\u2082",
          sidebarLayout (  #layout
            sidebarPanel(  #painel lateral
              radioButtons(inputId = "nivelco2",
@@ -10,7 +10,7 @@ CO2 <- tabPanel("CO2",
              selectInput(inputId = "dayco2",
                          label = "Day",
                          choices = unique(sort(pipae_all$D)),
-                         selected = "15",
+                         selected = "1",
                          width = "100px"),
              selectInput(inputId = "monthco2",
                          label = "Month",
@@ -24,8 +24,9 @@ CO2 <- tabPanel("CO2",
                          width = "100px"),
              radioButtons(inputId= "parco2",
                           label = "Parcel",
-                          choiceValues =  unique (pipae_all$parcela),
-                          choiceNames = c("Parcel 1", "Parcel 2", "Parcela 3", "Parcela 4"),
+                          choiceValues =  sort(unique (pipae_all$parcela)),
+                          choiceNames = c("Parcel 1", "Parcel 2",
+                                          "Parcel 3", "Parcel 4"),
                           selected = "par1"),
              width = 2
            ), #sidebarpanel end

@@ -11,7 +11,7 @@ temperatura <- tabPanel("Temperature", #titulo da aba
              selectInput(inputId = "day",
                          label = "Day",
                          choices = unique(sort(pipae_all$D)),
-                         selected = "15",
+                         selected = "1",
                          width = "100px"),
              selectInput(inputId = "month",
                          label = "Month",
@@ -23,8 +23,9 @@ temperatura <- tabPanel("Temperature", #titulo da aba
                          width = "100px"),
              radioButtons(inputId= "par",
                           label = "Parcel",
-                          choiceValues =  unique (pipae_all$parcela),
-                          choiceNames = c("Parcel 1", "Parcel 2", "Parcela 3", "Parcela 4"),
+                          choiceValues =  sort (unique (pipae_all$parcela)),
+                          choiceNames = c("Parcel 1", "Parcel 2",
+                                          "Parcel 3", "Parcel 4"),
                           selected = "par1"),
              width = 2
 
