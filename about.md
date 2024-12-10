@@ -17,8 +17,4 @@ The project is currently taking place in an urban forest fragment located in the
 * [CO<sub>2</sub> sensor](https://www.mouser.com/ProductDetail/Sensirion/SCD30?qs=rrS6PyfT74fdywu4FxpYjQ%3D%3D&srsltid=AfmBOor3OL8C59_sZGS3TlNYT1-NUfhQceNQLViz_JEDC01B7H29gbrc) 
 
 
----
-##### Para contribuir com o projeto
-###### To contribute to the project
 
-[app](https://github.com/PedrMartins/webapp)

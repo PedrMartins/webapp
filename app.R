@@ -44,6 +44,15 @@ server <- function(input, output, session) {
 
 
   output$TemperatureID <- renderPlot({
+    observeEvent(input$par, {
+      date_par <- pipae_all[pipae_all$parcela==input$par,]
+
+      updateSelectInput(inputId = "day",value = c(unique(
+                                sort( date_par$D)))
+                        )
+
+      })
+
     pipae_all = pipae_all [pipae_all$parcela ==  input$par,]
     if (input$nivel == "H") {
       pipae_all = pipae_all [ pipae_all$D == input$day &
@@ -132,10 +141,6 @@ server <- function(input, output, session) {
 
 
     }
-
-    legend("topleft",c("Pipae7"),
-           col= c("darkorange"),
-           lty = c(2,3,1), bty = "n")
 
 
   }, res= 96)
@@ -226,9 +231,6 @@ server <- function(input, output, session) {
             col = "darkblue")
     }
 
-    legend("topleft",c("Pipae7"),
-           col= c("darkblue"),
-           lty = c(2,3,1), bty = "n")
 
   },res=96)
 
@@ -318,13 +320,11 @@ server <- function(input, output, session) {
             col = "gray60")
     }
 
-    legend("topleft",c("Pipae7"),
-           col= c("gray60"),
-           lty = c(2,3,1), bty = "n")
 
   }, res= 96)
 
   output$boxplotvarID <-renderPlot({
+
     parcels <- input$parVar
     result <- data.frame()
     if (length (parcels)==0) {
@@ -340,7 +340,7 @@ server <- function(input, output, session) {
 
     names (pipae_all)[c(3,5,6,17)] <-  c("temp",
                               "umi",
-                              "CO\u2082"="CO2",
+                              "CO\u2082",
                               "parcel")
     vars <- input$var
     if (length(vars) > 0) {
