@@ -44,18 +44,21 @@ server <- function(input, output, session) {
 
 
   output$TemperatureID <- renderPlot({
+
     observeEvent(input$par, {
       date_par <- pipae_all[pipae_all$parcela==input$par,]
 
-      updateSelectInput(inputId = "day",value = c(unique(
-                                sort( date_par$D)))
-                        )
+      updateSelectInput(inputId = "day", choices = c(unique(
+        sort( date_par$D)))
+      )
 
-      })
+    })
+
 
     pipae_all = pipae_all [pipae_all$parcela ==  input$par,]
     if (input$nivel == "H") {
-      pipae_all = pipae_all [ pipae_all$D == input$day &
+
+       pipae_all = pipae_all [ pipae_all$D == input$day &
                           pipae_all$M == input$month &
                           pipae_all$Y == input$year,]
     } else if (input$nivel == "M" ) {
