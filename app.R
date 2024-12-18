@@ -14,10 +14,13 @@ source("umidade.R")
 source("temperatura.R")
 source("variable.R")
 
+pipae_par2 <- pipae_all[pipae_all$parcela=="par2"&
+                          pipae_all$D==20,]
+tail(pipae_par2)
 
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
-              navbarPage( "IoTree",
+              navbarPage( "Smart Forest",
                           tabPanel("About",
                                    div(includeMarkdown("about.md"),
                                        align="justify")),
@@ -41,22 +44,34 @@ server <- function(input, output, session) {
 
 
   output$TemperatureID <- renderPlot({
-    pipae7 = pipae7 [pipae7$parcela ==  input$par,]
+
+    observeEvent(input$par, {
+      date_par <- pipae_all[pipae_all$parcela==input$par,]
+
+      updateSelectInput(inputId = "day", choices = c(unique(
+        sort( date_par$D)))
+      )
+
+    })
+
+
+    pipae_all = pipae_all [pipae_all$parcela ==  input$par,]
     if (input$nivel == "H") {
-      pipae7 = pipae7 [ pipae7$D == input$day &
-                          pipae7$M == input$month &
-                          pipae7$Y == input$year,]
+
+       pipae_all = pipae_all [ pipae_all$D == input$day &
+                          pipae_all$M == input$month &
+                          pipae_all$Y == input$year,]
     } else if (input$nivel == "M" ) {
-      pipae7 = pipae7 [pipae7$Y == input$year,]
+      pipae_all = pipae_all [pipae_all$Y == input$year,]
     } else {
-      pipae7 = pipae7 [ pipae7$M == input$month &
-                          pipae7$Y == input$year,]
+      pipae_all = pipae_all [ pipae_all$M == input$month &
+                          pipae_all$Y == input$year,]
     }
 
-    pipae_mediatemperatura = get_dados_separados(pipae7,
-                                                 pipae7$Temperatura,
-                                                 date= pipae7$Data,
-                                                 time=pipae7$Hora,
+    pipae_mediatemperatura = get_dados_separados(pipae_all,
+                                                 pipae_all$Temperature,
+                                                 date= pipae_all$Date,
+                                                 time=pipae_all$Time,
                                                  media_nivel = input$nivel,
                                                  variavel = "temperatura")
     par( bty ="n", bg = "grey99", las =1,
@@ -64,10 +79,10 @@ server <- function(input, output, session) {
 
     if (input$nivel == "H"){
       pipae_mediatemperatura$nivel= pipae_mediatemperatura$H
-      escala = range(pipae_mediatemperatura$media_temperatura)
+      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
+      if (nrow(pipae_mediatemperatura) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
@@ -87,7 +102,7 @@ server <- function(input, output, session) {
 
     }else if (input$nivel=="D") {
       pipae_mediatemperatura$nivel= pipae_mediatemperatura$D
-      escala = range(pipae_mediatemperatura$media_temperatura)
+      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
       if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
@@ -111,7 +126,7 @@ server <- function(input, output, session) {
 
     } else {
       pipae_mediatemperatura$nivel=pipae_mediatemperatura$M
-      escala = range(pipae_mediatemperatura$media_temperatura)
+      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
 
@@ -130,30 +145,26 @@ server <- function(input, output, session) {
 
     }
 
-    legend("topleft",c("Pipae7"),
-           col= c("darkorange"),
-           lty = c(2,3,1), bty = "n")
-
 
   }, res= 96)
 
 
   output$MoistureID <- renderPlot({
-    pipae7 = pipae7 [pipae7$parcela ==  input$parmoisture,]
+    pipae_all = pipae_all [pipae_all$parcela ==  input$parmoisture,]
     if (input$nivelmoisture == "H") {
-      pipae7 = pipae7 [ pipae7$D == input$daymoisture &
-                          pipae7$M == input$monthmoisture &
-                          pipae7$Y == input$yearmoisture,]
+      pipae_all = pipae_all [ pipae_all$D == input$daymoisture &
+                          pipae_all$M == input$monthmoisture &
+                          pipae_all$Y == input$yearmoisture,]
     } else if (input$nivelmoisture == "M" ) {
-      pipae7 = pipae7 [pipae7$Y == input$yearmoisture,]
+      pipae_all = pipae_all [pipae_all$Y == input$yearmoisture,]
     } else {
-      pipae7 = pipae7 [ pipae7$M == input$monthmoisture &
-                          pipae7$Y == input$yearmoisture,]
+      pipae_all = pipae_all [ pipae_all$M == input$monthmoisture &
+                          pipae_all$Y == input$yearmoisture,]
     }
 
-    pipae_mediaumidade = get_dados_separados(pipae7, pipae7$Umidade,
-                                             date= pipae7$Data,
-                                             time=pipae7$Hora,
+    pipae_mediaumidade = get_dados_separados(pipae_all, pipae_all$Humidity,
+                                             date= pipae_all$Date,
+                                             time=pipae_all$Time,
                                              media_nivel = input$nivelmoisture,
                                              variavel = "umidade")
     par( bty ="n", bg = "grey99", las =1,
@@ -161,10 +172,10 @@ server <- function(input, output, session) {
 
     if (input$nivelmoisture == "H"){
       pipae_mediaumidade$nivel= pipae_mediaumidade$H
-      escala = range(pipae_mediaumidade$media_umidade)
+      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
+      if (nrow(pipae_mediaumidade) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
@@ -185,7 +196,7 @@ server <- function(input, output, session) {
     } else if (input$nivelmoisture == "D") {
 
       pipae_mediaumidade$nivel= pipae_mediaumidade$D
-      escala = range(pipae_mediaumidade$media_umidade)
+      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
       if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
@@ -207,7 +218,7 @@ server <- function(input, output, session) {
             col = "darkblue")
     } else {
       pipae_mediaumidade$nivel=pipae_mediaumidade$M
-      escala = range(pipae_mediaumidade$media_umidade)
+      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)
 
@@ -223,41 +234,39 @@ server <- function(input, output, session) {
             col = "darkblue")
     }
 
-    legend("topleft",c("Pipae7"),
-           col= c("darkblue"),
-           lty = c(2,3,1), bty = "n")
 
   },res=96)
 
   output$CO2ID <- renderPlot({
-    pipae7 = pipae7 [pipae7$parcela ==  input$parco2,]
+    pipae_all = pipae_all [pipae_all$parcela ==  input$parco2,]
+
     if (input$nivelco2 == "H") {
-      pipae7 = pipae7 [ pipae7$D == input$dayco2 &
-                          pipae7$M == input$monthco2 &
-                          pipae7$Y == input$yearco2,]
+
+      pipae_all = pipae_all [ pipae_all$D == input$dayco2 &
+                          pipae_all$M == input$monthco2 &
+                          pipae_all$Y == input$yearco2,]
     } else if (input$nivelco2 == "M" ) {
-      pipae7 = pipae7 [pipae7$Y == input$yearco2,]
+      pipae_all = pipae_all [pipae_all$Y == input$yearco2,]
     } else {
-      pipae7 = pipae7 [ pipae7$M == input$monthco2 &
-                          pipae7$Y == input$yearco2,]
+      pipae_all = pipae_all [ pipae_all$M == input$monthco2 &
+                          pipae_all$Y == input$yearco2,]
     }
 
-    pipae_mediaCO2 = get_dados_separados(pipae7, pipae7$CO2,
-                                         date= pipae7$Data,
-                                         time=pipae7$Hora,
+    pipae_mediaCO2 = get_dados_separados(pipae_all, pipae_all$CO2_ppm,
+                                         date= pipae_all$Date,
+                                         time=pipae_all$Time,
                                          media_nivel = input$nivelco2,
                                          variavel = "co2")
-    "serif"
     par(bty ="n", bg = "grey99", las =1,
         family="serif")
 
 
     if (input$nivelco2 == "H"){
       pipae_mediaCO2$nivel= pipae_mediaCO2$H
-      escala = range(pipae_mediaCO2$media_co2)
+      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
       min = trunc (escala [1] - 100)
       max = trunc (escala [2] + 100)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
+      if (nrow(pipae_mediaCO2) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
@@ -265,8 +274,8 @@ server <- function(input, output, session) {
 
       plot (media_co2~nivel, data=pipae_mediaCO2,
             type="n",
-            ylab="Mean CO2 ppm", xlab= "Hours",
-            main="CO2\nmean by hour",
+            ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Hours",
+            main="CO\u2082\nmean by hour",
             ylim = c(min, max),
             xlim=c(0,23))
 
@@ -277,7 +286,7 @@ server <- function(input, output, session) {
 
     } else if (input$nivelco2 == "D") {
       pipae_mediaCO2$nivel= pipae_mediaCO2$D
-      escala = range(pipae_mediaCO2$media_co2)
+      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
       min = trunc (escala [1] -100)
       max = trunc (escala [2] + 100)
       if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
@@ -288,8 +297,8 @@ server <- function(input, output, session) {
 
       plot (media_co2~nivel, data=pipae_mediaCO2,
             type="n",
-            ylab="Mean CO2 ppm", xlab= "Days",
-            main="CO2\nmean by day",
+            ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Days",
+            main="CO\u2082\nmean by day",
             ylim = c(min, max),
             xlim=c(0,23))
 
@@ -298,15 +307,15 @@ server <- function(input, output, session) {
             col = "gray60")
     } else {
       pipae_mediaCO2$nivel=pipae_mediaCO2$M
-      escala = range(pipae_mediaCO2$media_co2)
+      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
       min = trunc (escala [1] - 100)
       max = trunc (escala [2] + 100)
 
       plot (media_co2~nivel, data=pipae_mediaCO2,
             type="n",
-            ylab="Mean CO2 ppm",
+            ylab=expression("Mean" ~ CO[2] ~ "ppm"),
             xlab= "Months",
-            main="CO2\nmean by month",
+            main="CO\u2082\nmean by month",
             ylim = c(min, max) ,xlim=c(1,12))
 
       lines(media_co2 ~nivel, data=pipae_mediaCO2 ,
@@ -314,13 +323,11 @@ server <- function(input, output, session) {
             col = "gray60")
     }
 
-    legend("topleft",c("Pipae7"),
-           col= c("gray60"),
-           lty = c(2,3,1), bty = "n")
 
   }, res= 96)
 
   output$boxplotvarID <-renderPlot({
+
     parcels <- input$parVar
     result <- data.frame()
     if (length (parcels)==0) {
@@ -329,28 +336,24 @@ server <- function(input, output, session) {
       )
     }
     for (parcel in parcels) {
-      result <- rbind(result, pipae7[pipae7$parcela == parcel, ])
+      result <- rbind(result, pipae_all[pipae_all$parcela == parcel, ])
     }
 
-    pipae7 <- result
+    pipae_all <- result
 
-    excluir <- c("Luminosidade...", "UV...","Data", "Hora",
-                 "H","D","M","Y","Pressão","m" )
-    pipae7 <- pipae7[,!(names(pipae7)%in% excluir)]
-    names (pipae7) <-  c("CO2",
-                         "temp",
-                         "umi",
-                         "parcela")
-    pipae7 = na.omit(pipae7)
+    names (pipae_all)[c(3,5,6,17)] <-  c("temp",
+                              "umi",
+                              "CO\u2082",
+                              "parcel")
     vars <- input$var
     if (length(vars) > 0) {
       par(mfrow = c(1,length(vars)), bty = "n",
           bg = "grey99", family="serif")
       col = colorRampPalette(c("darkred", "lightblue"))
       for (var in vars) {
-        boxplot(as.formula(paste(var, "~ parcela")),
-                data = pipae7, main = var, col =
-                  col(length(unique(pipae7$parcela))),
+        boxplot(as.formula(paste(var, "~ parcel")),
+                data = pipae_all, main = var, col =
+                  col(length(unique(pipae_all$parcel))),
                 pch="*")
         #dicionariuo = var (estudar) xlab=dict[var]
       }
@@ -358,22 +361,22 @@ server <- function(input, output, session) {
   }, res = 96)
 
   output$table <- renderDataTable({
-    pipaes <- c(unique(pipae7$sensor))
+    pipaes <- c(unique(pipae_all$tag))
     status <- data.frame()
     for (pipae in pipaes) {
 
-      sensor=pipae7 [pipae7$sensor==pipae,]
+      sensor=pipae_all [pipae_all$tag==pipae,]
       diff <- time_length(Sys.Date()-
-                            sensor$Data [length(sensor$Data)],
+                            sensor$Date [length(sensor$Date)],
                           unit="day")
 
       if (diff > 0) {
         test <- data.frame(sensor=as.character (pipae),
-                           dias=sensor$Data [length(sensor$Data)],
+                           dias=sensor$Date [length(sensor$Date)],
                            status="No")
       }else {
         test  <- data.frame(sensor=as.character (pipae),
-                            dias=as.character(sensor$Data [length(sensor$Data)]),
+                            dias=as.character(sensor$Date [length(sensor$Date)]),
                             status="Yes")
       }
       status <-  rbind(status,test)
@@ -403,8 +406,6 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui=ui, server = server)
-
-
 
 #Reserva Florestal do Instituto de
 #Biociências
