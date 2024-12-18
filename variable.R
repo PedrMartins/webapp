@@ -4,7 +4,7 @@ variable <- tabPanel ("Variable",
               checkboxGroupInput (
                 inputId = "var",
                 label = "Variable",
-                choices = c ("CO\u2082" ="CO\u2082",
+                choices = c ("CO\u2082" ="CO2",
                              "Temperature" = "temp",
                              "Moisture"= "umi"),
                 selected = "temp"

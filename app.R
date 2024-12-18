@@ -363,7 +363,7 @@ server <- function(input, output, session) {
 
     names (pipae_all)[c(3,5,6,17)] <-  c("temp",
                               "umi",
-                              "CO\u2082",
+                              "CO2",
                               "parcel")
     vars <- input$var
     if (length(vars) > 0) {
@@ -375,8 +375,7 @@ server <- function(input, output, session) {
                 data = pipae_all, main = var, col =
                   col(length(unique(pipae_all$parcel))),
                 pch="*")
-        #dicionariuo = var (estudar) xlab=dict[var]
-      }
+        }
     }
   }, res = 96)
 
