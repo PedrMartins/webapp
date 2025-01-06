@@ -45,15 +45,6 @@ server <- function(input, output, session) {
 
   output$TemperatureID <- renderPlot({
 
-    observeEvent(input$month, {
-      date_par <- pipae_all[pipae_all$M==input$month,]
-
-      updateSelectInput(inputId = "day", choices = c(unique(
-        sort( date_par$D)))
-      )
-
-    })
-
 
     pipae_all = pipae_all [pipae_all$parcela ==  input$par,]
     if (input$nivel == "H") {
@@ -151,15 +142,6 @@ server <- function(input, output, session) {
 
   output$MoistureID <- renderPlot({
 
-    observeEvent(input$monthmoisture, {
-      date_par <- pipae_all[pipae_all$M==input$monthmoisture,]
-
-      updateSelectInput(inputId = "daymoisture", choices = c(unique(
-        sort( date_par$D)))
-      )
-
-    })
-
     pipae_all = pipae_all [pipae_all$parcela ==  input$parmoisture,]
     if (input$nivelmoisture == "H") {
       pipae_all = pipae_all [ pipae_all$D == input$daymoisture &
@@ -248,15 +230,6 @@ server <- function(input, output, session) {
   },res=96)
 
   output$CO2ID <- renderPlot({
-
-    observeEvent(input$monthco2, {
-      date_par <- pipae_all[pipae_all$M==input$monthco2,]
-
-      updateSelectInput(inputId = "dayco2", choices = c(unique(
-        sort( date_par$D)))
-      )
-
-    })
 
     pipae_all = pipae_all [pipae_all$parcela ==  input$parco2,]
 
@@ -375,7 +348,9 @@ server <- function(input, output, session) {
                 data = pipae_all, main = var, col =
                   col(length(unique(pipae_all$parcel))),
                 pch="*")
+
         }
+
     }
   }, res = 96)
 

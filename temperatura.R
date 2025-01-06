@@ -12,6 +12,7 @@ temperatura <- tabPanel("Temperature", #titulo da aba
                          label = "Day",
                          choices = unique(sort(pipae_all$D)),
                          selected = day(Sys.Date()),
+
                          width = "100px"),
              selectInput(inputId = "month",
                          label = "Month",
