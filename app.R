@@ -295,7 +295,7 @@ server <- function(input, output, session) {
             ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Days",
             main="CO\u2082\nmean by day",
             ylim = c(min, max),
-            xlim=c(0,23))
+            xlim=c(0,30))
 
       lines(media_co2~nivel, data=pipae_mediaCO2,
             lty = 5, lwd =4,
