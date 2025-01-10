@@ -28,7 +28,7 @@ get_dados_separados = function ( data, x, date=NULL, time=NULL,
 
 
   nivel <- intersect(c("H", "D", "M"), media_nivel)
-  var <- intersect(c ("co2","temperatura","umidade"), variavel)
+  var <- intersect(c ("co2","temperatura","umidade", "pressao"), variavel)
   if (nivel== "H" & is.null(time)==TRUE) {
     stop("deve informar variável 'time'")
   }

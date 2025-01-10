@@ -75,3 +75,5 @@ import_pipae <-  function(pipae = NULL){
 pipae_all=import_pipae(c("pipae7","pipae2",
                          "pipae1", "pipae8"))
 
+
+

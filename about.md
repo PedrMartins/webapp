@@ -11,8 +11,8 @@ Atualmente o projeto ocorre em um fragmento florestal urbano localizado na cidad
 using climate sensors to assess the microclimate of urban forests. 
 The project is currently taking place in an urban forest fragment located in the university city, São Paulo.
 
-
 ---
+
 #### sensores 
 ##### sensors 
 

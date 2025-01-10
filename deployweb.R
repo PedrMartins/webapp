@@ -12,7 +12,8 @@ rsconnect::deployApp("~/Desktop/R_analysis/webapp",
                                   "umidade.R",
                                   "variable.R",
                                   "temperatura.R",
-                                  "co2.R")
+                                  "co2.R",
+                                  "pression.R")
                      )
 
 

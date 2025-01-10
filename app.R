@@ -13,6 +13,7 @@ source("co2.R")
 source("umidade.R")
 source("temperatura.R")
 source("variable.R")
+source("pression.R")
 
 pipae_par2 <- pipae_all[pipae_all$parcela=="par2"&
                           pipae_all$D==20,]
@@ -27,6 +28,7 @@ ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
                           temperatura,
                           umidade,
                           CO2,
+                          Pression,
                           variable,
                           tabPanel ("Status",
                                     h3("Sensor's status"),
@@ -44,15 +46,6 @@ server <- function(input, output, session) {
 
 
   output$TemperatureID <- renderPlot({
-
-    observeEvent(input$month, {
-      date_par <- pipae_all[pipae_all$M==input$month,]
-
-      updateSelectInput(inputId = "day", choices = c(unique(
-        sort( date_par$D)))
-      )
-
-    })
 
 
     pipae_all = pipae_all [pipae_all$parcela ==  input$par,]
@@ -151,15 +144,6 @@ server <- function(input, output, session) {
 
   output$MoistureID <- renderPlot({
 
-    observeEvent(input$monthmoisture, {
-      date_par <- pipae_all[pipae_all$M==input$monthmoisture,]
-
-      updateSelectInput(inputId = "daymoisture", choices = c(unique(
-        sort( date_par$D)))
-      )
-
-    })
-
     pipae_all = pipae_all [pipae_all$parcela ==  input$parmoisture,]
     if (input$nivelmoisture == "H") {
       pipae_all = pipae_all [ pipae_all$D == input$daymoisture &
@@ -249,15 +233,6 @@ server <- function(input, output, session) {
 
   output$CO2ID <- renderPlot({
 
-    observeEvent(input$monthco2, {
-      date_par <- pipae_all[pipae_all$M==input$monthco2,]
-
-      updateSelectInput(inputId = "dayco2", choices = c(unique(
-        sort( date_par$D)))
-      )
-
-    })
-
     pipae_all = pipae_all [pipae_all$parcela ==  input$parco2,]
 
     if (input$nivelco2 == "H") {
@@ -320,7 +295,7 @@ server <- function(input, output, session) {
             ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Days",
             main="CO\u2082\nmean by day",
             ylim = c(min, max),
-            xlim=c(0,23))
+            xlim=c(0,30))
 
       lines(media_co2~nivel, data=pipae_mediaCO2,
             lty = 5, lwd =4,
@@ -341,6 +316,97 @@ server <- function(input, output, session) {
       lines(media_co2 ~nivel, data=pipae_mediaCO2 ,
             lty = 5, lwd =4,
             col = "gray60")
+    }
+
+
+  }, res= 96)
+
+  output$pressID <- renderPlot({
+
+    pipae_all = pipae_all [pipae_all$parcela ==  input$parpress,]
+
+    if (input$nivelpress == "H") {
+
+      pipae_all = pipae_all [ pipae_all$D == input$daypress &
+                                pipae_all$M == input$monthpres &
+                                pipae_all$Y == input$yearpres,]
+    } else if (input$nivelpress == "M" ) {
+      pipae_all = pipae_all [pipae_all$Y == input$yearpres,]
+    } else {
+      pipae_all = pipae_all [ pipae_all$M == input$monthpres &
+                                pipae_all$Y == input$yearpres,]
+    }
+
+    pipae_mediapress = get_dados_separados(pipae_all,
+                                         pipae_all$Pressure,
+                                         date= pipae_all$Date,
+                                         time=pipae_all$Time,
+                                         media_nivel = input$nivelpress,
+                                         variavel = "pressao")
+    par(bty ="n", bg = "grey99", las =1,
+        family="serif")
+
+
+    if (input$nivelpress == "H"){
+      pipae_mediapress$nivel= pipae_mediapress$H
+      escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
+      min = trunc (escala [1] - 5)
+      max = trunc (escala [2] + 5)
+      if (nrow(pipae_mediapress) == 0) {
+        stop (safeError(
+          "\n No data collection for that date\n use another date")
+        )
+      }
+
+      plot (media_pressao~nivel, data=pipae_mediapress,
+            type="n",
+            ylab="Mean Pressure", xlab= "Hours",
+            main="Pressure\nmean by hour",
+            ylim = c(min, max),
+            xlim=c(0,23))
+
+      lines(media_pressao~nivel, data=pipae_mediapress,
+            lty = 5, lwd =4,
+            col = "pink")
+
+
+    } else if (input$nivelpress == "D") {
+      pipae_mediapress$nivel= pipae_mediapress$D
+      escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
+      min = trunc (escala [1] -5)
+      max = trunc (escala [2] + 5)
+      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
+        stop (safeError(
+          "\n No data collection for that date\n use another date")
+        )
+      }
+
+      plot (media_pressao~nivel, data=pipae_mediapress,
+            type="n",
+            ylab=expression("Mean Pressure"), xlab= "Days",
+            main="Pressure\nmean by day",
+            ylim = c(min, max),
+            xlim=c(0,30))
+
+      lines(media_pressao~nivel, data=pipae_mediapress,
+            lty = 5, lwd =4,
+            col = "pink")
+    } else {
+      pipae_mediapress$nivel=pipae_mediapress$M
+      escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
+      min = trunc (escala [1] - 5)
+      max = trunc (escala [2] + 5)
+
+      plot (media_pressao~nivel, data=pipae_mediapress,
+            type="n",
+            ylab=expression("Mean" ~ CO[2] ~ "ppm"),
+            xlab= "Months",
+            main="CO\u2082\nmean by month",
+            ylim = c(min, max) ,xlim=c(1,12))
+
+      lines(media_pressao ~nivel, data=pipae_mediapress ,
+            lty = 5, lwd =4,
+            col = "pink")
     }
 
 
@@ -375,7 +441,9 @@ server <- function(input, output, session) {
                 data = pipae_all, main = var, col =
                   col(length(unique(pipae_all$parcel))),
                 pch="*")
+
         }
+
     }
   }, res = 96)
 
