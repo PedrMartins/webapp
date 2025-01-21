@@ -12,14 +12,15 @@ rsconnect::deployApp("~/Desktop/R_analysis/webapp",
                                   "umidade.R",
                                   "variable.R",
                                   "temperatura.R",
-                                  "co2.R")
+                                  "co2.R",
+                                  "pression.R")
                      )
 
 
 
-all_c = colors()
-str_subset(all_c, "red")
-q ()
+#all_c = colors()
+#str_subset(all_c, "p")
+#q ()
 
 
 
