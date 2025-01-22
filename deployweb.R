@@ -18,9 +18,9 @@ rsconnect::deployApp("~/Desktop/R_analysis/webapp",
 
 
 
-all_c = colors()
-str_subset(all_c, "red")
-q ()
+#all_c = colors()
+#str_subset(all_c, "p")
+#q ()
 
 
 

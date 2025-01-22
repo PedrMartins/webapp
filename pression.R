@@ -1,4 +1,4 @@
-Pression <- tabPanel("Pression",
+Pression <- tabPanel("Barometer",
                 sidebarLayout (  #layout
                   sidebarPanel(  #painel lateral
                     radioButtons(inputId = "nivelpress",

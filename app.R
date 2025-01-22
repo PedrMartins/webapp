@@ -14,10 +14,10 @@ source("umidade.R")
 source("temperatura.R")
 source("variable.R")
 source("pression.R")
+source("Download.R")
 
 pipae_par2 <- pipae_all[pipae_all$parcela=="par2"&
                           pipae_all$D==20,]
-tail(pipae_par2)
 
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
@@ -38,7 +38,8 @@ ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
                                    leafletOutput(
                                      "MapsPipae",
                                      height = 600)
-                                   )
+                                   ),
+                          Download
                           )# navpage end
 )
 
@@ -350,8 +351,8 @@ server <- function(input, output, session) {
     if (input$nivelpress == "H"){
       pipae_mediapress$nivel= pipae_mediapress$H
       escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
-      min = trunc (escala [1] - 5)
-      max = trunc (escala [2] + 5)
+      min = round (escala [1] - 0.25, 2)
+      max = round (escala [2] + 0.25, 2)
       if (nrow(pipae_mediapress) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
@@ -371,10 +372,10 @@ server <- function(input, output, session) {
 
 
     } else if (input$nivelpress == "D") {
-      pipae_mediapress$nivel= pipae_mediapress$D
+           pipae_mediapress$nivel= pipae_mediapress$D
       escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
-      min = trunc (escala [1] -5)
-      max = trunc (escala [2] + 5)
+      min = round(escala [1] -0.25, 2)
+      max = round (escala [2] + 0.25,2)
       if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
@@ -394,8 +395,8 @@ server <- function(input, output, session) {
     } else {
       pipae_mediapress$nivel=pipae_mediapress$M
       escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
-      min = trunc (escala [1] - 5)
-      max = trunc (escala [2] + 5)
+      min = round (escala [1] - 0.25, 2)
+      max = round (escala [2] + 0.25, 2)
 
       plot (media_pressao~nivel, data=pipae_mediapress,
             type="n",
@@ -496,3 +497,5 @@ shinyApp(ui=ui, server = server)
 
 #Reserva Florestal do Instituto de
 #Biociências
+
+
