@@ -1,37 +1,49 @@
-Download <- tabPanel("Downloads",
+Download <- tabPanel("Data Download",
                      sidebarLayout (  #layout
                        sidebarPanel(  #painel lateral
-                         radioButtons(inputId = "nivelpress",
-                                      label = "Mean Nivel",
-                                      choices =  c("Hour"="H",
-                                                   "Day"="D",
-                                                   "Month"="M"),
-                                      selected = "D"),
-                         selectInput(inputId = "daypress",
-                                     label = "Day",
-                                     choices = unique(sort(pipae_all$D)),
-                                     selected = day(Sys.time()),
-                                     width = "100px"),
-                         selectInput(inputId = "monthpres",
-                                     label = "Month",
-                                     choices = unique(pipae_all$M),
-                                     selected = month(Sys.Date()),,
-                                     width = "100px"),
-                         selectInput(inputId = "yearpres",
-                                     label = "Year",
-                                     choices = unique(pipae_all$Y),
-                                     selected = year(Sys.Date()),
-                                     width = "100px"),
-                         radioButtons(inputId= "parpress",
-                                      label = "Parcel",
-                                      choiceValues =  sort(unique (pipae_all$parcela)),
-                                      choiceNames = c("Parcel 1", "Parcel 2",
-                                                      "Parcel 3", "Parcel 4"),
-                                      selected = "par1"),
+                         selectizeInput("days", "Days",
+                                        choices = unique(sort(pipae_all$D)), multiple = TRUE),
+                         radioButtons(inputId = "intervalday",
+                                      label = "Interval Day",
+                                      choices =  c("To"="to",
+                                                   "And"="and"),
+                                      selected = "To"),
+                         selectizeInput("month", "Months",
+                                        choices = unique(sort(pipae_all$M)), multiple = TRUE),
+                         radioButtons(inputId = "intervalmonth",
+                                      label = "Interval Month",
+                                      choices =  c("To"="to",
+                                                   "And"="and"),
+                                      selected = "To"),
+                         selectizeInput("year", "Years",
+                                        choices = unique(sort(pipae_all$Y)),
+                                        multiple = TRUE),
+                         radioButtons(inputId = "intervalyear",
+                                      label = "Interval Year",
+                                      choices =  c("To"="to",
+                                                   "And"="and"),
+                                      selected = "To"),
+                         checkboxGroupInput(inputId = "tab_plot",
+                                      label = "Format",
+                                      choices =  c("Table"="tab",
+                                                   "Chart"="plot"),
+                                      selected = "Chart")
+                         ,
                          width = 2
                        ), #sidebarpanel end
                        mainPanel (
-                         plotOutput (outputId = "pressID")
+                         tabsetPanel(type="tab",
+                          tabPanel ("Chart",
+                                    plotOutput (outputId = "plotDown"),
+                                    downloadButton("downplot","Download Chart",
+                                                   class = "custom-download-btn")
+                                    ),
+                          tabPanel ("Table",
+                                    tableOutput(outputId="tableDown"),
+                                    downloadButton("downtab","Download Table",
+                                                   class = "custom-download-btn")
+                                    )
+                         )
                        )#mainplanel end
                      ) #sidebar layout end
 ) #tabpanel2 end co2
