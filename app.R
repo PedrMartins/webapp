@@ -492,6 +492,13 @@ server <- function(input, output, session) {
                  label="IoTree")
   })
 
+  output$plotDown <- renderPlot({
+
+  })
+
+  output$tableDown <- renderTable({
+
+  })
 
 }
 
