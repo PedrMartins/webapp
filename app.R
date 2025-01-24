@@ -52,14 +52,14 @@ server <- function(input, output, session) {
     pipae_all = pipae_all [pipae_all$parcela ==  input$par,]
     if (input$nivel == "H") {
 
-       pipae_all = pipae_all [ pipae_all$D == input$day &
-                          pipae_all$M == input$month &
-                          pipae_all$Y == input$year,]
+      pipae_all = pipae_all [ pipae_all$D == input$day &
+                                pipae_all$M == input$month &
+                                pipae_all$Y == input$year,]
     } else if (input$nivel == "M" ) {
       pipae_all = pipae_all [pipae_all$Y == input$year,]
     } else {
       pipae_all = pipae_all [ pipae_all$M == input$month &
-                          pipae_all$Y == input$year,]
+                                pipae_all$Y == input$year,]
     }
 
     pipae_mediatemperatura = get_dados_separados(pipae_all,
@@ -496,13 +496,49 @@ server <- function(input, output, session) {
 
   })
 
-  output$tableDown <- renderTable({
+  output$tableDown <- renderDataTable({
+    days <- input$days
+    if (input$intervalday == "to") {
+      max=range (days) [2]
+      min=range (days) [1]
+      days = c (min:max)
+
+    }
+    month <- input$month
+    if (input$intervalmonth == "to") {
+      max=range (month) [2]
+      min=range (month) [1]
+      days = c (min:max)
+
+    }
+
+    month <- input$month
+    if (input$intervalmonth == "to") {
+      max=range (month) [2]
+      min=range (month) [1]
+      days = c (min:max)
+
+    }
+
+    year <- input$year
+    if (input$intervalyear == "to") {
+      max=range (year) [2]
+      min=range (year) [1]
+      year = c (min:max)
+
+    }
+
+    separated_pipae_by_day=get_data_by_month (pipae_all,
+                                              days = days,
+                                              month =  month)
+
+
 
   })
 
 }
 
-shinyApp(ui=ui, server = server)
+shinyApp(ui=ui, server=server)
 
 #Reserva Florestal do Instituto de
 #Biociências
