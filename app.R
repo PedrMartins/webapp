@@ -1,7 +1,5 @@
 # Load R packages
 
-##Testing push
-
 library(shiny)
 library(shinythemes)
 library(stringr)
@@ -499,7 +497,7 @@ server <- function(input, output, session) {
 
   })
 
-  output$tableDown <- renderDataTable({
+  output$tableDown <- renderTable({
     days <- input$days
     if (input$intervalday == "to") {
       max=range (days) [2]

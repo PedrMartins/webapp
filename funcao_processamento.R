@@ -108,7 +108,9 @@ separate_variable <- function(x, variable = "co2", na.rm = FALSE,
 
 
 get_data_by_month <- function(x, month=NULL,
-                              days= NULL, order=TRUE){
+                              days= NULL,
+                              year= NULL,
+                              order=TRUE){
   if (is.null(month)) {
     stop("choose a month")
   }
