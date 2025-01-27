@@ -67,6 +67,9 @@ import_pipae <-  function(pipae = NULL){
            D=day(pipae_all$Date),
            M= month(pipae_all$Date),
            Y= year(pipae_all$Date))
+  pipae_all$DateTime <- as.POSIXct(
+    paste(pipae_all$Date, pipae_all$Time),
+    format = "%Y-%m-%d %HH %MM %SS")
 
   pipae_all
 }

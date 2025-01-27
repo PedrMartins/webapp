@@ -23,12 +23,17 @@ Download <- tabPanel("Data Download",
                                       choices =  c("To"="to",
                                                    "And"="and"),
                                       selected = "To"),
-                         checkboxGroupInput(inputId = "tab_plot",
+                         radioButtons(inputId = "tab_plot",
                                       label = "Format",
                                       choices =  c("Table"="tab",
                                                    "Chart"="plot"),
-                                      selected = "Chart")
-                         ,
+                                      selected = "Chart"),
+                         radioButtons(inputId = "var",
+                                             label = "Variable",
+                                             choices =  c("CO\u2082"="co2",
+                                                          "Temperature"="temperatura",
+                                                          "Moisture"="umidade"),
+                                             selected = "Temperature"),
                          width = 2
                        ), #sidebarpanel end
                        mainPanel (
