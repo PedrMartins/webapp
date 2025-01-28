@@ -1,7 +1,3 @@
-library(lubridate)
-library (dplyr)
-
-
 
 get_dados_separados = function ( data, x, date=NULL, time=NULL,
                                 media_nivel = "D", variavel = "co2"
@@ -79,10 +75,18 @@ separate_variable <- function(x, variable = "co2", na.rm = FALSE,
                               order=FALSE, duplicated= FALSE) {
   # Definindo um vetor nomeado que mapeia variáveis às suas colunas
   column_map <- list(
-    co2 = c("CO2_ppm", "Date", "DateTime", "Time","H","D", "M", "Y", "m"),
-    temperatura = c("Temperature", "Date", "DateTime", "Time", "H","D", "M", "Y", "m"),
-    umidade = c("Humidity", "Date", "DateTime", "Time", "H","D", "M", "Y", "m"),
-    luminosidade = c("Luminosity", "Date", "DateTime", "Time","H", "D", "M", "Y", "m")
+    co2 = c("CO2_ppm", "Date", "DateTime",
+            "Time","H","D", "M", "Y", "m",
+            "tag", "parcela"),
+    temperatura = c("Temperature", "Date", "DateTime",
+                    "Time", "H","D", "M", "Y", "m"
+                    , "tag", "parcela"),
+    umidade = c("Humidity", "Date", "DateTime",
+                "Time", "H","D", "M", "Y", "m",
+                "tag", "parcela"),
+    pressao = c("Pressure", "Date", "DateTime",
+                     "Time","H", "D", "M", "Y", "m",
+                     "tag", "parcela")
   )
 
   # Verifica se a variável está no mapa, caso contrário, retorna NULL
@@ -92,7 +96,7 @@ separate_variable <- function(x, variable = "co2", na.rm = FALSE,
     stop("Variable not recognized.
          Please choose from 'co2',
          'temperatura', 'umidade', or
-         'luminosidade'.")
+         'pressao'.")
   }
 
   # Subconjunto dos dados com as colunas selecionadas
@@ -106,55 +110,42 @@ separate_variable <- function(x, variable = "co2", na.rm = FALSE,
 }
 
 
-x <-  pipae_all
-get_data_by_date <- function(x, month=NULL,
-                              days= NULL,
-                              year= NULL,
-                              order=TRUE){
 
-  if (is.null (year)==FALSE){
-    pipae_separated <- x[x$Y==year,]
-    if (is.null(month)==FALSE) {
-      if (length(month)==1){
-      pipae_separated <- pipae_separated[pipae_separated$M==month,]
-      }else{
-        pipae_separated <- pipae_separated[pipae_separated$Y==month,]
-        pipae_separated_month <- data.frame()
-        for (i in month) {
-          pipae_month <- pipae_separated[pipae_separated$M==i,]
-          pipae_separated_month <- rbind(month, pipae_separated_month)
-
-        }
-        pipae_separated <- pipae_separated_month
-      }
-      if (is.null(days)==FALSE) {
-        if (length(month)==1) {
-          pipae_separated <- pipae_separated[pipae_separated$D==days,]
-        }else {
-
-        }
-
-      }
-    }
-  }else if (is.null(days)) {
-    pipae_separated <- x[x$M==month,]
-    if (order){pipae_separated <-  pipae_separated[
-                order(pipae_separated$DateTime),]}
-  }else {
-    x <- x[x$M==month,]
-    pipae_separated <- data.frame()
-    for (i in days) {
-      pipae_dia <- x[x$D==i,]
-      pipae_separated <- rbind(pipae_dia, pipae_separated)
-    }
-    if (order){pipae_separated <-  pipae_separated[
-      order(pipae_separated$DateTime),]}
-
+get_data_by_date <- function(x, month = NULL, days = NULL, year = NULL, order = TRUE) {
+  # Ensure the year is provided
+  if (is.null(year)) {
+    stop("Choose a year to download the data.")
   }
+
+  # Filter by year
+  if (length(year) == 1) {
+    pipae_separated <- x[x$Y == year, ]
+  } else {
+    pipae_separated <-  x[x$Y %in% year, ]
+  }
+  unique(pipae_separated$D)
+  # Filter by month if provided
+  if (!is.null(month)) {
+    if (length(month) == 1) {
+      pipae_separated <- pipae_separated[pipae_separated$M == month, ]
+    } else {
+      pipae_separated <- pipae_separated[pipae_separated$M %in% month, ]
+    }
+  }
+
+  # Filter by days if provided
+  if (!is.null(days)) {
+    if (length(days) == 1) {
+      pipae_separated <- pipae_separated[pipae_separated$D == days, ]
+    } else {
+      pipae_separated <- pipae_separated[pipae_separated$D %in% days, ]
+    }
+  }
+
+  # Order by DateTime if required
+  if (order) {
+    pipae_separated <- pipae_separated[order(pipae_separated$DateTime), ]
+  }
+
   return(pipae_separated)
-
 }
-
-x =get_data_by_date (pipae_all, year = 2024)
-head (x)
-unique(x$M)

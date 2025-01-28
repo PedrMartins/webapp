@@ -1,13 +1,5 @@
 # Load R packages
-
-library(shiny)
-library(shinythemes)
-library(stringr)
-library(lubridate)
-library (dplyr)
-library(markdown)
-library(leaflet)
-library(sf)
+source("library_package.R")
 source("data_update.R")
 source("funcao_processamento.R")
 source("co2.R")
@@ -16,9 +8,6 @@ source("temperatura.R")
 source("variable.R")
 source("pression.R")
 source("Download.R")
-
-pipae_par2 <- pipae_all[pipae_all$parcela=="par2"&
-                          pipae_all$D==20,]
 
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
@@ -499,42 +488,48 @@ server <- function(input, output, session) {
 
   output$tableDown <- renderDataTable({
 
-    days <- input$days
+    days <- input$daysDown
+
     if (input$intervalday == "to") {
       max=range (days) [2]
       min=range (days) [1]
       days = c (min:max)
+    }else {days <- as.integer(days)}
 
-    }
-    month <- input$month
+    month <- input$monthDown
+
     if (input$intervalmonth == "to") {
       max=range (month) [2]
       min=range (month) [1]
-      days = c (min:max)
+      month = c (min:max)
+    }else {month <- as.integer(month)}
 
-    }
-    year <- input$year
+    year <- input$yearDown
+
     if (input$intervalyear == "to") {
       max=range (year) [2]
       min=range (year) [1]
       year = c (min:max)
+    }else {year <- as.integer(year)}
 
-    }
     if (input$vardown!="no_one") {
       separate_var_by_input=separate_variable(pipae_all, input$vardown,
                                               na.rm=TRUE, )
       separated_pipae_by_day <- get_data_by_date (separate_var_by_input,
                          days = days,
-                         month =  month)
-
+                         month =  month,
+                         year = year)
     }else {
     separated_pipae_by_day=get_data_by_date (pipae_all,
                                               days = days,
-                                              month =  month)
+                                              month =  month,
+                                             year = year)
 }
     excluir <- c("Luminosity", "UV.Intensity", "UV.Index",
                  "Latitude", "Longitude", "Speed",
-                 "Altitude", "GNSS.Time", "GNSS.Date", "m")
+                 "Altitude", "GNSS.Time", "GNSS.Date", "m", "H"
+                ,"D", "M", "Y",
+                "Date", "Time")
     separated_pipae_by_day <- separated_pipae_by_day[,!(names(
                               separated_pipae_by_day)%in% excluir)]
     separated_pipae_by_day
