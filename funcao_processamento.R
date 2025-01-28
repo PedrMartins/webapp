@@ -79,7 +79,7 @@ separate_variable <- function(x, variable = "co2", na.rm = FALSE,
                               order=FALSE, duplicated= FALSE) {
   # Definindo um vetor nomeado que mapeia variáveis às suas colunas
   column_map <- list(
-    co2 = c("CO2.Concentration", "Date", "DateTime", "Time","H","D", "M", "Y", "m"),
+    co2 = c("CO2_ppm", "Date", "DateTime", "Time","H","D", "M", "Y", "m"),
     temperatura = c("Temperature", "Date", "DateTime", "Time", "H","D", "M", "Y", "m"),
     umidade = c("Humidity", "Date", "DateTime", "Time", "H","D", "M", "Y", "m"),
     luminosidade = c("Luminosity", "Date", "DateTime", "Time","H", "D", "M", "Y", "m")
@@ -106,31 +106,55 @@ separate_variable <- function(x, variable = "co2", na.rm = FALSE,
 }
 
 
+x <-  pipae_all
+get_data_by_date <- function(x, month=NULL,
+                              days= NULL,
+                              year= NULL,
+                              order=TRUE){
 
-get_data_by_month <- function(x, month=NULL,
-                              days= NULL, order=TRUE){
-  if (is.null(month)) {
-    stop("choose a month")
-  }
-  if (is.null(days)) {
-    x <- x[x$M==month,]
-    if (order){x <-  x[order(x$DateTime),]}
-    return(x)
+  if (is.null (year)==FALSE){
+    pipae_separated <- x[x$Y==year,]
+    if (is.null(month)==FALSE) {
+      if (length(month)==1){
+      pipae_separated <- pipae_separated[pipae_separated$M==month,]
+      }else{
+        pipae_separated <- pipae_separated[pipae_separated$Y==month,]
+        pipae_separated_month <- data.frame()
+        for (i in month) {
+          pipae_month <- pipae_separated[pipae_separated$M==i,]
+          pipae_separated_month <- rbind(month, pipae_separated_month)
+
+        }
+        pipae_separated <- pipae_separated_month
+      }
+      if (is.null(days)==FALSE) {
+        if (length(month)==1) {
+          pipae_separated <- pipae_separated[pipae_separated$D==days,]
+        }else {
+
+        }
+
+      }
+    }
+  }else if (is.null(days)) {
+    pipae_separated <- x[x$M==month,]
+    if (order){pipae_separated <-  pipae_separated[
+                order(pipae_separated$DateTime),]}
   }else {
     x <- x[x$M==month,]
-    pipae_month <- data.frame()
+    pipae_separated <- data.frame()
     for (i in days) {
       pipae_dia <- x[x$D==i,]
-      pipae_month <- rbind(pipae_dia, pipae_month)
+      pipae_separated <- rbind(pipae_dia, pipae_separated)
     }
-    if (order){pipae_month <-  pipae_month[
-      order(pipae_month$DateTime),]}
-    return(pipae_month)
-  }
+    if (order){pipae_separated <-  pipae_separated[
+      order(pipae_separated$DateTime),]}
 
+  }
+  return(pipae_separated)
 
 }
 
-head (pipae_all)
-get_data_by_month (pipae_all, month = 12)
-
+x =get_data_by_date (pipae_all, year = 2024)
+head (x)
+unique(x$M)

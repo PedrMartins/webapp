@@ -1,4 +1,5 @@
 # Load R packages
+
 library(shiny)
 library(shinythemes)
 library(stringr)
@@ -469,7 +470,7 @@ server <- function(input, output, session) {
       }
       status <-  rbind(status,test)
     }
-    names (status) <- c("Sensor","Last Received","Working fine")
+    names (status) <- c("Sensor","Last Received","Working")
     status
   })
 
@@ -497,6 +498,7 @@ server <- function(input, output, session) {
   })
 
   output$tableDown <- renderDataTable({
+
     days <- input$days
     if (input$intervalday == "to") {
       max=range (days) [2]
@@ -511,15 +513,6 @@ server <- function(input, output, session) {
       days = c (min:max)
 
     }
-
-    month <- input$month
-    if (input$intervalmonth == "to") {
-      max=range (month) [2]
-      min=range (month) [1]
-      days = c (min:max)
-
-    }
-
     year <- input$year
     if (input$intervalyear == "to") {
       max=range (year) [2]
@@ -527,13 +520,24 @@ server <- function(input, output, session) {
       year = c (min:max)
 
     }
+    if (input$vardown!="no_one") {
+      separate_var_by_input=separate_variable(pipae_all, input$vardown,
+                                              na.rm=TRUE, )
+      separated_pipae_by_day <- get_data_by_date (separate_var_by_input,
+                         days = days,
+                         month =  month)
 
-    separated_pipae_by_day=get_data_by_month (pipae_all,
+    }else {
+    separated_pipae_by_day=get_data_by_date (pipae_all,
                                               days = days,
                                               month =  month)
-
-
-
+}
+    excluir <- c("Luminosity", "UV.Intensity", "UV.Index",
+                 "Latitude", "Longitude", "Speed",
+                 "Altitude", "GNSS.Time", "GNSS.Date", "m")
+    separated_pipae_by_day <- separated_pipae_by_day[,!(names(
+                              separated_pipae_by_day)%in% excluir)]
+    separated_pipae_by_day
   })
 
 }
