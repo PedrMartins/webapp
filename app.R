@@ -535,6 +535,16 @@ server <- function(input, output, session) {
     separated_pipae_by_day
   })
 
+  output$downtab <- downloadHandler(
+    filename = function () {
+      paste ("Data_Smart_forest","tbs", sep=".")
+    },
+    content = function (file) {
+      write.table(,file)
+
+    }
+  )
+
 }
 
 shinyApp(ui=ui, server=server)

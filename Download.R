@@ -1,4 +1,4 @@
-Download <- tabPanel("Data Download",
+Download <- tabPanel("Download Data",
                      sidebarLayout (  #layout
                        sidebarPanel(  #painel lateral
                          selectizeInput("yearDown", "Choose Interval Years",
@@ -45,12 +45,12 @@ Download <- tabPanel("Data Download",
                          tabsetPanel(type="tab",
                           tabPanel ("Preview Chart",
                                     plotOutput (outputId = "plotDown"),
-                                    downloadButton("downplot","Download Chart",
+                                    downloadButton("downplot","Download Plot",
                                                    class = "custom-download-btn")
                                     ),
                           tabPanel ("Preview Table",
                                     dataTableOutput(outputId="tableDown"),
-                                    downloadButton("downtab","Download Table",
+                                    downloadButton("downtab","Download Date",
                                                    class = "custom-download-btn")
                                     )
                          )
