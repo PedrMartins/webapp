@@ -32,7 +32,6 @@ The web app are deployed on [shiny.io](https://www.shinyapps.io/)
 >To debug web aplications you might use the log session. To access the log you have to click on your application, and then, 
 click on log on topright on your screen.
 >For more details use this [page](https://shiny.posit.co/r/articles/) to learning about the package possibilities.
->***
 >##### On this site you'll learn how:
 > - Debuging your code
 > - Improve the scale of your application
