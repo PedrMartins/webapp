@@ -1,7 +1,7 @@
 # IoTree Web application 
 
 This application on web was build on R language using shiny package. To understand how build
-or improve this application you can follow this tutorial [on youtube](https://www.youtube.com/watch?v=9uFQECk30kA&t=1273s) 
+or improve this application you can follow this tutorial on [youtube](https://www.youtube.com/watch?v=9uFQECk30kA&t=1273s) 
 or in this [ebook](https://mastering-shiny.org/)
 
 The main script in this repository is the [app.R](https://github.com/PedrMartins/webapp/blob/master/app.R), 
