@@ -50,7 +50,7 @@ Download <- tabPanel("Download Data",
                                     ),
                           tabPanel ("Preview Table",
                                     dataTableOutput(outputId="tableDown"),
-                                    downloadButton("downtab","Download Date",
+                                    downloadButton("downtab","Download Data",
                                                    class = "custom-download-btn")
                                     )
                          )

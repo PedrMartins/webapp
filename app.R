@@ -486,7 +486,7 @@ server <- function(input, output, session) {
 
   })
 
-  output$tableDown <- renderDataTable({
+  filtered <- reactive({
 
     days <- input$daysDown
 
@@ -532,16 +532,20 @@ server <- function(input, output, session) {
                 "Date", "Time")
     separated_pipae_by_day <- separated_pipae_by_day[,!(names(
                               separated_pipae_by_day)%in% excluir)]
-    separated_pipae_by_day
+    return (separated_pipae_by_day)
+  })
+
+  output$tableDown <- renderDT ({
+
+    datatable (filtered (), options= list (pageLength = 10))
   })
 
   output$downtab <- downloadHandler(
-    filename = function () {
-      paste ("Data_Smart_forest","tbs", sep=".")
+    filename = function() {
+      paste("Smart_forest_data_", Sys.Date(), ".tsv", sep = "")
     },
-    content = function (file) {
-      write.table(,file)
-
+    content = function(file) {
+      write.table(filtered(), file, row.names = TRUE,)
     }
   )
 
