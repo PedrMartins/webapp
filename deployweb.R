@@ -16,13 +16,10 @@ rsconnect::deployApp("~/Desktop/R_analysis/webapp",
                                   "pression.R",
                                   "library_package.R",
                                   "Download.R")
-                     )
+)
 
 
 
 #all_c = colors()
 #str_subset(all_c, "p")
 #q ()
-
-
-
