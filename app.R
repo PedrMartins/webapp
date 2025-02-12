@@ -11,7 +11,7 @@ source("Download.R")
 
 ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
               # <--- To use a theme
-              navbarPage( "Smart Forest",
+              navbarPage( "Smart Forests",
                           tabPanel("About",
                                    div(includeMarkdown("about.md"),
                                        align="justify")),
