@@ -38,5 +38,5 @@ click on log on topright on your screen.
 > - Deploy your web application
 
 
-### [smart forest](https://pedro-rufino-13021991.shinyapps.io/webapp/)
+### [Smart forests](https://pedro-rufino-13021991.shinyapps.io/webapp/)
 
