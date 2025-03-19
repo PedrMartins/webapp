@@ -1,18 +1,19 @@
-library(lubridate)
-library (dplyr)
-
 
 import_pipae <-  function(pipae = NULL){
   pipae_all = data.frame()
   source <- c ( "pipae1" ="https://docs.google.com/spreadsheets/d/e/2PACX-1vQmbdkhDjts41TXdkpoghubvLQ_5waEms3_RSUXBa_JBg1Z0o2AEnjRpWlTe6lv8go3nouimqUEeklI/pub?output=csv",
                 "pipae2" ="https://docs.google.com/spreadsheets/d/e/2PACX-1vQZb9G0b6kE_I91HK7KOtIA7XJ_-OpW6I4J4ibTU4v1ljzAlgplWdzLRpsMiLqr6reiV6Jol3yrvOkE/pub?output=csv",
-                "pipae3"="https://docs.google.com/spreadsheets/d/e/2PACX-1vSgEviRT5URoJqohwPc4m-HuNkwkqy9TVDOVnDsu7x0hyNYJvLPlc_B9y3TrEqNf1fhe6fPensFXlOH/pub?output=csv",
+                #"pipae3"="https://docs.google.com/spreadsheets/d/e/2PACX-1vSgEviRT5URoJqohwPc4m-HuNkwkqy9TVDOVnDsu7x0hyNYJvLPlc_B9y3TrEqNf1fhe6fPensFXlOH/pub?output=csv",
                 "pipae7"="https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOc4PMg1xC0qpUceE6BZV8L1oLn8D5zf-dALqqWiEQZBFJH23dzPiqwn7NOlFowHEis1N4eb7JvFZ/pub?output=csv",
-                "pipae8"="https://docs.google.com/spreadsheets/d/e/2PACX-1vRezDFvNifmWuJUoVIIhyazBaD281lsr4qeV3EWROGEUH8CDBD01riMOWMfDbsPH0Z8wFkEmtQRbfEC/pub?output=csv"
-               )
+                "pipae8"="https://docs.google.com/spreadsheets/d/e/2PACX-1vRezDFvNifmWuJUoVIIhyazBaD281lsr4qeV3EWROGEUH8CDBD01riMOWMfDbsPH0Z8wFkEmtQRbfEC/pub?output=csv",
+                "pipae9"="https://docs.google.com/spreadsheets/d/e/2PACX-1vQtwvqsZbeuuR-u18YXmgkFYPzCjd0qYGJ-oX0pNx6o6wfcS1mb140y3YNzuGYrrUVnVebdFVUf8Tss/pub?output=csv",
+                "pipae10"="https://docs.google.com/spreadsheets/d/e/2PACX-1vTFwcv50LDoLD0EVEV_r423wSCU6KI8gN-7wjmhZAhaWvgTUL3BeyPiAEzEWS_cHzCsAQkg6r3ssOPt/pub?output=csv",
+                "pipae11"="https://docs.google.com/spreadsheets/d/e/2PACX-1vSZP1CXjEgzUE0Apxx4fNK81x5711ex1ZED7wWnboy2XFe6RIUXmmXY7CSyXRC7SR6WaztfSsSjlv5n/pub?output=csv",
+                "pipae12"="https://docs.google.com/spreadsheets/d/e/2PACX-1vQjS8tOb5qiGdbxjv9HrwS-cpDOcMBSZ4Kyp0YW0StZGRE4lzZDo8EHXAqpfW4X3iYye1idYPXPZW7P/pub?output=csv"
+                )
 
   #sensores <- paste("pipae",seq(1, length(source)), sep="")
-  sensores <- paste("pipae", c(1:3,7:8), sep="")
+  sensores <- paste("pipae", c(1:3,7:12), sep="")
   if (is.null(pipae)==TRUE) {stop ("inclua sensores")}
 
   if (length(setdiff(pipae,sensores))!= 0) {
@@ -35,17 +36,17 @@ import_pipae <-  function(pipae = NULL){
 
 
       if (names(source[i]) %in%
-          c(paste("pipae", 2, sep=""))){
+          c(paste("pipae", c(2,9), sep=""))){
         site$tag = rep (names(source[i]),
                         length(site$CO2_ppm))
         site$parcela = rep ("par2", length(site$CO2_ppm))
       } else if (names(source[i]) %in%
-                    c(paste("pipae", 1,sep=""))){
+                    c(paste("pipae", c(1,10),sep=""))){
         site$tag = rep (names(source[i]),
                         length(site$CO2_ppm))
         site$parcela = rep ("par1", length(site$CO2_ppm))
       } else if (names(source[i]) %in%
-                 c(paste("pipae", 7,sep=""))) {
+                 c(paste("pipae", c(7,11),sep=""))) {
         site$tag = rep (names(source[i]),
                         length(site$CO2_ppm))
         site$parcela = rep ("par3", length(site$CO2_ppm))
@@ -75,6 +76,8 @@ import_pipae <-  function(pipae = NULL){
 }
 
 
-pipae_all=import_pipae(c("pipae7","pipae2",
-                         "pipae1", "pipae8"))
+pipae_all=import_pipae(paste0(
+                              "pipae", c(1:2,7:12)
+                              )
+                       )
 
