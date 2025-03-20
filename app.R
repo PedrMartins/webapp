@@ -428,7 +428,6 @@ server <- function(input, output, session) {
     vars <- input$var
 
     if (length(vars) > 0) {
-      browser()
       par(mfrow = c(1,length(vars)), bty = "n",
           bg = "grey99", family="serif")
       col = colorRampPalette(c("darkred", "lightblue"))
