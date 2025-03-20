@@ -416,14 +416,19 @@ server <- function(input, output, session) {
       result <- rbind(result, pipae_all[pipae_all$parcela == parcel, ])
     }
 
+
     pipae_all <- result
 
-    names (pipae_all)[c(3,5,6,17)] <-  c("temp",
-                              "umi",
-                              "CO2",
-                              "parcel")
+
+    names (pipae_all)[c(3,4,5,6,17)] <-  c("temp",
+                                           "bar",
+                                          "umi",
+                                          "CO2",
+                                          "parcel")
     vars <- input$var
+
     if (length(vars) > 0) {
+      browser()
       par(mfrow = c(1,length(vars)), bty = "n",
           bg = "grey99", family="serif")
       col = colorRampPalette(c("darkred", "lightblue"))
