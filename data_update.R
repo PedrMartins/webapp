@@ -8,12 +8,12 @@ import_pipae <-  function(pipae = NULL){
                 "pipae8"="https://docs.google.com/spreadsheets/d/e/2PACX-1vRezDFvNifmWuJUoVIIhyazBaD281lsr4qeV3EWROGEUH8CDBD01riMOWMfDbsPH0Z8wFkEmtQRbfEC/pub?output=csv",
                 "pipae9"="https://docs.google.com/spreadsheets/d/e/2PACX-1vQtwvqsZbeuuR-u18YXmgkFYPzCjd0qYGJ-oX0pNx6o6wfcS1mb140y3YNzuGYrrUVnVebdFVUf8Tss/pub?output=csv",
                 "pipae10"="https://docs.google.com/spreadsheets/d/e/2PACX-1vTFwcv50LDoLD0EVEV_r423wSCU6KI8gN-7wjmhZAhaWvgTUL3BeyPiAEzEWS_cHzCsAQkg6r3ssOPt/pub?output=csv",
-                "pipae11"="https://docs.google.com/spreadsheets/d/e/2PACX-1vSZP1CXjEgzUE0Apxx4fNK81x5711ex1ZED7wWnboy2XFe6RIUXmmXY7CSyXRC7SR6WaztfSsSjlv5n/pub?output=csv",
-                "pipae12"="https://docs.google.com/spreadsheets/d/e/2PACX-1vQjS8tOb5qiGdbxjv9HrwS-cpDOcMBSZ4Kyp0YW0StZGRE4lzZDo8EHXAqpfW4X3iYye1idYPXPZW7P/pub?output=csv"
+                "pipae11"="https://docs.google.com/spreadsheets/d/e/2PACX-1vSZP1CXjEgzUE0Apxx4fNK81x5711ex1ZED7wWnboy2XFe6RIUXmmXY7CSyXRC7SR6WaztfSsSjlv5n/pub?output=csv"
+               # "pipae12"="https://docs.google.com/spreadsheets/d/e/2PACX-1vQjS8tOb5qiGdbxjv9HrwS-cpDOcMBSZ4Kyp0YW0StZGRE4lzZDo8EHXAqpfW4X3iYye1idYPXPZW7P/pub?output=csv"
                 )
 
   #sensores <- paste("pipae",seq(1, length(source)), sep="")
-  sensores <- paste("pipae", c(1:3,7:12), sep="")
+  sensores <- paste("pipae", c(1:2,7:11), sep="")
   if (is.null(pipae)==TRUE) {stop ("inclua sensores")}
 
   if (length(setdiff(pipae,sensores))!= 0) {
@@ -76,8 +76,8 @@ import_pipae <-  function(pipae = NULL){
 }
 
 
-pipae_all=import_pipae(paste0(
-                              "pipae", c(1:2,7:12)
+pipae_all=import_pipae(pipae=paste0(
+                              "pipae", c(1:2,7:11)
                               )
                        )
 

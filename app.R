@@ -442,7 +442,7 @@ server <- function(input, output, session) {
     pipaes <- c(unique(pipae_all$tag))
     status <- data.frame()
     for (pipae in pipaes) {
-
+      head (pipae_all)
       sensor=pipae_all [pipae_all$tag==pipae,]
       diff <- time_length(Sys.Date()-
                             sensor$Date [length(sensor$Date)],
@@ -451,15 +451,17 @@ server <- function(input, output, session) {
       if (diff > 0) {
         test <- data.frame(sensor=as.character (pipae),
                            dias=sensor$Date [length(sensor$Date)],
+                           parcela=unique (sensor$parcela),
                            status="No")
       }else {
         test  <- data.frame(sensor=as.character (pipae),
                             dias=as.character(sensor$Date [length(sensor$Date)]),
+                            parcela=unique (sensor$parcela),
                             status="Yes")
       }
       status <-  rbind(status,test)
     }
-    names (status) <- c("Sensor","Last Received","Working")
+    names (status) <- c("Sensor","Last Received", "Parcel","Working")
     status
   })
 
