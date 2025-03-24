@@ -450,14 +450,16 @@ server <- function(input, output, session) {
       diff <- time_length(Sys.Date()-
                             sensor$Date [length(sensor$Date)],
                           unit="day")
+      if (is.na(diff)) {
+        next
+      }
+
       if (diff > 0) {
         test <- data.frame(sensor=as.character (pipae),
                            dias=sensor$Date [length(sensor$Date)],
                            parcela=unique (sensor$parcela),
                            status="No",
                            packs=dim(sensor[sensor$Date==Sys.Date(),])[1])
-      }else if (is.na(diff)==TRUE) {
-        status
       }else {
         test  <- data.frame(sensor=as.character (pipae),
                             dias=as.character(sensor$Date [length(sensor$Date)]),
