@@ -468,7 +468,7 @@ server <- function(input, output, session) {
       status <-  rbind(status,test)
     }
     names (status) <- c("Sensor","Last Received",
-                        "Parcel","Working","Packets sent")
+                        "Parcel","Working","Sample size")
     status
   })
 
@@ -489,8 +489,6 @@ server <- function(input, output, session) {
                  opacity = 0.10,
                  label="IoTree")
   })
-
-
 
   filtered <- reactive({
 
