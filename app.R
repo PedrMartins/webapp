@@ -470,7 +470,8 @@ server <- function(input, output, session) {
       status <-  rbind(status,test)
     }
     names (status) <- c("Sensor","Last Received",
-                        "Parcel","Working","Sample size")
+                        "Parcel","Working",
+                        paste ("Sample size", "on", Sys.Date(), sep = " "))
     status
   })
 
