@@ -446,32 +446,34 @@ server <- function(input, output, session) {
     pipaes <- c(unique(pipae_all$tag))
     status <- data.frame()
     for (pipae in pipaes) {
-      head (pipae_all)
       sensor=pipae_all [pipae_all$tag==pipae,]
       diff <- time_length(Sys.Date()-
                             sensor$Date [length(sensor$Date)],
                           unit="day")
-
       if (diff > 0) {
         test <- data.frame(sensor=as.character (pipae),
                            dias=sensor$Date [length(sensor$Date)],
                            parcela=unique (sensor$parcela),
-                           status="No")
+                           status="No",
+                           packs=dim(sensor[sensor$Date==Sys.Date(),])[1])
+      }else if (is.na(diff)==TRUE) {
+        status
       }else {
         test  <- data.frame(sensor=as.character (pipae),
                             dias=as.character(sensor$Date [length(sensor$Date)]),
                             parcela=unique (sensor$parcela),
-                            status="Yes")
+                            status="Yes",
+                            packs=dim(sensor[sensor$Date==Sys.Date(),])[1])
       }
       status <-  rbind(status,test)
     }
-    names (status) <- c("Sensor","Last Received", "Parcel","Working")
+    names (status) <- c("Sensor","Last Received",
+                        "Parcel","Working","Packets sent")
     status
   })
 
   output$MapsPipae <- renderLeaflet ({
-    a <-  data.frame(lat = -23.565297,
-                     long=-46.728907)
+
     leaflet() |>
       addProviderTiles(
         provider = providers$Esri.WorldImagery, group="Stallite View") |>
@@ -488,9 +490,7 @@ server <- function(input, output, session) {
                  label="IoTree")
   })
 
-  output$plotDown <- renderPlot({
 
-  })
 
   filtered <- reactive({
 
