@@ -37,7 +37,7 @@ Download <- tabPanel("Download Data",
                                                   "Temperature"="temperatura",
                                                   "Moisture"="umidade",
                                                   "Barometer"="pressao",
-                                                  "All Variable"="no_one"),
+                                                  "All Variables"="no_one"),
                                       selected = "no_one"),
                          width = 2
                        ), #sidebarpanel end
