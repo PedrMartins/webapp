@@ -456,7 +456,7 @@ server <- function(input, output, session) {
 
       if (diff > 0) {
         test <- data.frame(sensor=as.character (pipae),
-                           dias=sensor$Date [length(sensor$Date)],
+                           dias=as.character(sensor$Date [length(sensor$Date)]),
                            parcela=unique (sensor$parcela),
                            status="No",
                            packs=dim(sensor[sensor$Date==Sys.Date(),])[1])
