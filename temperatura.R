@@ -4,9 +4,9 @@ temperatura <- tabPanel("Temperature", #titulo da aba
            sidebarPanel( #painel lateral
              radioButtons(inputId = "nivel",
                           label = "Mean Nivel",
-                          choices =  c("Hour"="H",
-                                       "Day"="D",
-                                       "Month"="M"),
+                          choices =  c("Day"="H",
+                                       "MOnth"="D",
+                                       "Year"="M"),
                           selected = "D"),
              selectInput(inputId = "day",
                          label = "Day",
