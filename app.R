@@ -36,7 +36,7 @@ ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
 server <- function(input, output, session) {
 
 
-  output$TemperatureID <- renderPlot({
+  output$TemperatureID <- renderPlotly({
 
 
     pipae_all = pipae_all [pipae_all$parcela ==  input$par,]
@@ -58,79 +58,56 @@ server <- function(input, output, session) {
                                                  time=pipae_all$Time,
                                                  media_nivel = input$nivel,
                                                  variavel = "temperatura")
-    par( bty ="n", bg = "grey99", las =1,
-         family="serif")
-
     if (input$nivel == "H"){
       pipae_mediatemperatura$nivel= pipae_mediatemperatura$H
-      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
+
+      if (nrow(pipae_mediatemperatura) == 0) {
+        stop (safeError(
+          "\n No data collection for that date\n use another date")
+        )
+      }
+      plot_ly(data=pipae_mediatemperatura,
+              x=~nivel,
+              y=~media_temperatura,
+              color=~parcela,
+              type="scatter",
+              mode="lines")
+
+
+    }else if (input$nivel=="D") {
+      pipae_mediatemperatura$nivel= pipae_mediatemperatura$D
       if (nrow(pipae_mediatemperatura) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
       }
 
-      plot (media_temperatura~nivel,
-            data=pipae_mediatemperatura,
-            type="n",
-            ylab="Mean temperature ºC",
-            xlab= "Hours",
-            main="Temperature\nmean by hour",
-            ylim = c(min,max),
-            xlim=c(0,23))
-      lines(media_temperatura~nivel,
-            data=pipae_mediatemperatura, lty = 5,
-            lwd = 4, col = "darkorange")
+      plot_ly(data=pipae_mediatemperatura,
+              x=~nivel,
+              y=~media_temperatura,
+              color=~parcela,
+              type="scatter",
+              mode="lines")
 
-    }else if (input$nivel=="D") {
-      pipae_mediatemperatura$nivel= pipae_mediatemperatura$D
-      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
+    } else {
+      pipae_mediatemperatura$nivel=pipae_mediatemperatura$M
+      if (nrow(pipae_mediatemperatura) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
       }
-
-
-      plot (media_temperatura~nivel,
-            data=pipae_mediatemperatura, type="n",
-            ylab="Mean temperature ºC", xlab= "Days",
-            main="Temperature\nmean by day",
-            ylim = c(min,max) ,xlim=c(0,30))
-
-      lines(media_temperatura ~nivel,
-            data=pipae_mediatemperatura ,
-            lty = 5, lwd =4,
-            col = "darkorange")
-
-
-    } else {
-      pipae_mediatemperatura$nivel=pipae_mediatemperatura$M
-      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
-
-      plot (media_temperatura~nivel,
-            data=pipae_mediatemperatura,
-            type="n",ylab="Mean temperature ºC",
-            xlab= "Months",
-            main="Temperature\nmean by month",
-            ylim = c(min,max) ,xlim=c(1,12))
-
-      lines(media_temperatura ~nivel,
-            data=pipae_mediatemperatura ,
-            lty = 5, lwd =4,
-            col = "darkorange")
+      plot_ly(data=pipae_mediatemperatura,
+              x=~nivel,
+              y=~media_temperatura,
+              color=~parcela,
+              type="scatter",
+              mode="lines")
 
 
     }
 
 
-  }, res= 96)
+  })
 
 
   output$MoistureID <- renderPlot({
@@ -203,6 +180,7 @@ server <- function(input, output, session) {
             col = "darkblue")
     } else {
       pipae_mediaumidade$nivel=pipae_mediaumidade$M
+      head (pipae_mediaumidade$nivel)
       escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
       min = trunc (escala [1] - 10)
       max = trunc (escala [2] + 10)

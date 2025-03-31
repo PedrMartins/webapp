@@ -1,10 +1,11 @@
 #pkg <- c("shiny","shinythemes","stringr","lubridate",
-#         "dplyr","markdown","leaflet","sf","DT")
+#         "dplyr","markdown","leaflet","sf","DT","plotly")
 
 #pkg <- pkg[!pkg%in%installed.packages()]
 #pkg
 #install.packages (pkg)
 
+library(plotly)
 library(shiny)
 library(shinythemes)
 library(stringr)
