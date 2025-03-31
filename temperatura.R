@@ -35,7 +35,7 @@ temperatura <- tabPanel("Temperature", #titulo da aba
            ),#inputs
 
            mainPanel (
-             plotOutput(outputId = "TemperatureID")
+             plotlyOutput(outputId = "TemperatureID")
            ) #fim Main Panel parte central em geral é onde se tem output
          )#sidebar layout end
 ) #tabpanel1 end temperatura
