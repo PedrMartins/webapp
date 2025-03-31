@@ -72,7 +72,8 @@ server <- function(input, output, session) {
         data = pipae_mediatemperatura,
         x = ~Date,
         y = ~Temperature,
-        type="scatter"
+        type="scatter",
+        mode="lines"
       )
 
 
