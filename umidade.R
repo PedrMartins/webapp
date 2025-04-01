@@ -23,18 +23,12 @@ umidade <- tabPanel ("Moisture",
                           choices = unique(pipae_all$Y),
                           selected = year(Sys.Date()),,
                           width = "100px"),
-              radioButtons(inputId= "parmoisture",
-                           label = "Parcel",
-                           choiceValues =  sort (unique (pipae_all$parcela)),
-                           choiceNames = c("Parcel 1", "Parcel 2",
-                                           "Parcel 3", "Parcel 4"),
-                           selected = "par1"),
               width = 2,
               fluid = TRUE
             ), #inputs end
 
             mainPanel (
-              plotOutput(outputId = "MoistureID")
+              plotlyOutput(outputId = "MoistureID")
             ) #Main Panel parte central em geral é onde se tem ooutput
           )#sidebar end
 ) #tabpanel2 end umidade

@@ -46,6 +46,7 @@ server <- function(input, output, session) {
     } else if (input$nivel == "M" ) {
       pipae_all = pipae_all [pipae_all$Y == input$year,]
     } else {
+
       pipae_all = pipae_all [ pipae_all$M == input$month &
                                 pipae_all$Y == input$year,]
     }
@@ -66,14 +67,23 @@ server <- function(input, output, session) {
           "\n No data collection for that date\n use another date")
         )
       }
+      browser()
+      if (input$nivel=="H") {date="Day"} else if (
+        input$nivel=="D") {date = "Month"} else {date = "Year"}
+      if (input$nivel=="H") {var="Hour"} else if (
+        input$nivel=="D") {var = "Day"} else {var = "Month"}
+
+
+
       plot_ly(data=pipae_mediatemperatura,
               x=~nivel,
               y=~media_temperatura,
               color=~parcela,
               type="scatter",
               mode="lines") |>
-      layout(title= paste ("Temperature mean by Hour"),
-             xaxis = list(title = 'Hours'),
+      layout(title= paste ("Temperature mean by",
+                           date, sep = " "),
+             xaxis = list(title = var),
              yaxis = list(title = 'Mean Temperature ºC'),
              plot_bgcolor = "gray95")
 
@@ -121,9 +131,9 @@ server <- function(input, output, session) {
   })
 
 
-  output$MoistureID <- renderPlot({
+  output$MoistureID <- renderPlotly({
 
-    pipae_all = pipae_all [pipae_all$parcela ==  input$parmoisture,]
+
     if (input$nivelmoisture == "H") {
       pipae_all = pipae_all [ pipae_all$D == input$daymoisture &
                           pipae_all$M == input$monthmoisture &
@@ -140,78 +150,71 @@ server <- function(input, output, session) {
                                              time=pipae_all$Time,
                                              media_nivel = input$nivelmoisture,
                                              variavel = "umidade")
-    par( bty ="n", bg = "grey99", las =1,
-         family="serif")
 
     if (input$nivelmoisture == "H"){
       pipae_mediaumidade$nivel= pipae_mediaumidade$H
-      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
+
+      if (nrow(pipae_mediaumidade) == 0) {
+        stop (safeError(
+          "\n No data collection for that date\n use another date")
+        )
+      }
+      plot_ly(data=pipae_mediaumidade,
+              x=~nivel,
+              y=~media_umidade,
+              color=~parcela,
+              type="scatter",
+              mode="lines") |>
+        layout(title= paste ("Moiture mean by Hour"),
+               xaxis = list(title = 'Hours'),
+               yaxis = list(title = 'Mean Moiture %'),
+               plot_bgcolor = "gray95")
+
+
+
+    } else if (input$nivelmoisture == "D") {
+
+      pipae_mediaumidade$nivel= pipae_mediaumidade$D
       if (nrow(pipae_mediaumidade) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
       }
 
-      plot (media_umidade~nivel,
-            data=pipae_mediaumidade, type="n",
-            ylab="Mean moisture %", xlab= "Hours",
-            main="Moisture\nmean by hour",
-            ylim = c(min, max),
-            xlim=c(0,23))
+      plot_ly(data=pipae_mediaumidade,
+              x=~nivel,
+              y=~media_umidade,
+              color=~parcela,
+              type="scatter",
+              mode="lines") |>
+        layout(title= paste ("Moiture mean by Hour"),
+               xaxis = list(title = 'Hours'),
+               yaxis = list(title = 'Mean Moiture %'),
+               plot_bgcolor = "gray95")
 
-      lines(media_umidade~nivel, data=pipae_mediaumidade,
-            lty = 5, lwd =4,
-            col = "darkblue")
-
-
-    } else if (input$nivelmoisture == "D") {
-
-      pipae_mediaumidade$nivel= pipae_mediaumidade$D
-      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
+      } else {
+      pipae_mediaumidade$nivel=pipae_mediaumidade$M
+      if (nrow(pipae_mediaumidade) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
       }
-
-
-      plot (media_umidade~nivel,
-            data=pipae_mediaumidade, type="n",
-            ylab="Mean Moisture %", xlab= "Days",
-            main="Moisture\nmean by day",
-            ylim = c(min, max),
-            xlim=c(0,30))
-
-      lines(media_umidade~nivel, data=pipae_mediaumidade ,
-            lty = 5, lwd =4,
-            col = "darkblue")
-    } else {
-      pipae_mediaumidade$nivel=pipae_mediaumidade$M
-      head (pipae_mediaumidade$nivel)
-      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
-
-      plot (media_umidade~nivel, data=pipae_mediaumidade,
-            type="n",
-            ylab="Mean Moisture %", xlab= "Months",
-            main="Moisture\nmean by month",
-            ylim = c(min, max),
-            xlim=c(1,12))
-
-      lines(media_umidade ~nivel, data=pipae_mediaumidade ,
-            lty = 5, lwd =4,
-            col = "darkblue")
+      plot_ly(data=pipae_mediaumidade,
+              x=~nivel,
+              y=~media_umidade,
+              color=~parcela,
+              type="scatter",
+              mode="lines") |>
+        layout(title= paste ("Moiture mean by Month"),
+               xaxis = list(title = 'Hours'),
+               yaxis = list(title = 'Mean Moiture %'),
+               plot_bgcolor = "gray95")
     }
 
 
-  },res=96)
+  })
 
-  output$CO2ID <- renderPlot({
+  output$CO2ID <- renderPlotly({
 
     pipae_all = pipae_all [pipae_all$parcela ==  input$parco2,]
 
@@ -299,9 +302,9 @@ server <- function(input, output, session) {
     }
 
 
-  }, res= 96)
+  })
 
-  output$pressID <- renderPlot({
+  output$pressID <- renderPlotly({
 
     pipae_all = pipae_all [pipae_all$parcela ==  input$parpress,]
 
@@ -390,9 +393,9 @@ server <- function(input, output, session) {
     }
 
 
-  }, res= 96)
+  })
 
-  output$boxplotvarID <-renderPlot({
+  output$boxplotvarID <-renderPlotly({
 
     parcels <- input$parVar
     result <- data.frame()
@@ -429,7 +432,7 @@ server <- function(input, output, session) {
         }
 
     }
-  }, res = 96)
+  })
 
   output$table <- renderDataTable({
     pipaes <- c(unique(pipae_all$tag))
