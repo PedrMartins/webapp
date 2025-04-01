@@ -73,7 +73,7 @@ server <- function(input, output, session) {
         x = ~Date,
         y = ~Temperature,
         type="scatter",
-        mode ="lines"
+        mode="lines"
       )
 
 
