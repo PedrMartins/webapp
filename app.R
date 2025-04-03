@@ -58,22 +58,26 @@ server <- function(input, output, session) {
                                                  media_nivel = input$nivel,
                                                  variavel = "temperatura")
 
-
     if (input$nivel == "H"){
-      pipae_mediatemperatura$nivel= pipae_mediatemperatura$H
+      pipae_mediatemperatura$nivel= pipae_mediatemperatura$H } else if (
+        input$nivel == "D"){
+        pipae_mediatemperatura$nivel= pipae_mediatemperatura$D
+      } else {pipae_mediatemperatura$nivel= pipae_mediatemperatura$M}
 
       if (nrow(pipae_mediatemperatura) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
       }
-      browser()
-      if (input$nivel=="H") {date="Day"} else if (
-        input$nivel=="D") {date = "Month"} else {date = "Year"}
-      if (input$nivel=="H") {var="Hour"} else if (
-        input$nivel=="D") {var = "Day"} else {var = "Month"}
 
-
+      date <- switch (input$nivel,
+              "H"="Day",
+              "D"="Month",
+              "M"="Year")
+      var <- switch (input$nivel,
+        "H" = "Hour",
+        "D" = "Day",
+        "M" = "Month")
 
       plot_ly(data=pipae_mediatemperatura,
               x=~nivel,
@@ -86,47 +90,6 @@ server <- function(input, output, session) {
              xaxis = list(title = var),
              yaxis = list(title = 'Mean Temperature ºC'),
              plot_bgcolor = "gray95")
-
-
-    }else if (input$nivel=="D") {
-      pipae_mediatemperatura$nivel= pipae_mediatemperatura$D
-      if (nrow(pipae_mediatemperatura) == 0) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
-
-      plot_ly(data=pipae_mediatemperatura,
-              x=~nivel,
-              y=~media_temperatura,
-              color=~parcela,
-              type="scatter",
-              mode="lines")|>
-        layout(title= paste ("Temperature mean by Day"),
-               xaxis = list(title = 'Days'),
-               yaxis = list(title = 'Mean Temperature ºC'),
-               plot_bgcolor = "gray95")
-    } else {
-      pipae_mediatemperatura$nivel=pipae_mediatemperatura$M
-      if (nrow(pipae_mediatemperatura) == 0) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
-      plot_ly(data=pipae_mediatemperatura,
-              x=~nivel,
-              y=~media_temperatura,
-              color=~parcela,
-              type="scatter",
-              mode="lines")|>
-        layout(title= paste ("Temperature mean by Month"),
-               xaxis = list(title = 'Months'),
-               yaxis = list(title = 'Mean Temperature ºC'),
-               plot_bgcolor = "gray95")
-
-
-    }
-
 
   })
 
@@ -152,34 +115,28 @@ server <- function(input, output, session) {
                                              variavel = "umidade")
 
     if (input$nivelmoisture == "H"){
-      pipae_mediaumidade$nivel= pipae_mediaumidade$H
+      pipae_mediaumidade$nivel= pipae_mediaumidade$H} else if (
+        input$nivelmoisture == "D"){
+        pipae_mediaumidade$nivel= pipae_mediaumidade$D}else{
+          pipae_mediaumidade$nivel= pipae_mediaumidade$M
+        }
 
       if (nrow(pipae_mediaumidade) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
       }
-      plot_ly(data=pipae_mediaumidade,
-              x=~nivel,
-              y=~media_umidade,
-              color=~parcela,
-              type="scatter",
-              mode="lines") |>
-        layout(title= paste ("Moiture mean by Hour"),
-               xaxis = list(title = 'Hours'),
-               yaxis = list(title = 'Mean Moiture %'),
-               plot_bgcolor = "gray95")
 
+    date <- switch (input$nivelmoisture,
+                    "H"="Day",
+                    "D"="Month",
+                    "M"="Year")
 
+    var <- switch (input$nivelmoisture,
+                   "H" = "Hour",
+                   "D" = "Day",
+                   "M" = "Month")
 
-    } else if (input$nivelmoisture == "D") {
-
-      pipae_mediaumidade$nivel= pipae_mediaumidade$D
-      if (nrow(pipae_mediaumidade) == 0) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
 
       plot_ly(data=pipae_mediaumidade,
               x=~nivel,
@@ -187,36 +144,15 @@ server <- function(input, output, session) {
               color=~parcela,
               type="scatter",
               mode="lines") |>
-        layout(title= paste ("Moiture mean by Hour"),
-               xaxis = list(title = 'Hours'),
+        layout(title= paste ("Moiture mean by",
+                             date, sep = " "),
+               xaxis = list(title = var),
                yaxis = list(title = 'Mean Moiture %'),
                plot_bgcolor = "gray95")
-
-      } else {
-      pipae_mediaumidade$nivel=pipae_mediaumidade$M
-      if (nrow(pipae_mediaumidade) == 0) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
-      plot_ly(data=pipae_mediaumidade,
-              x=~nivel,
-              y=~media_umidade,
-              color=~parcela,
-              type="scatter",
-              mode="lines") |>
-        layout(title= paste ("Moiture mean by Month"),
-               xaxis = list(title = 'Hours'),
-               yaxis = list(title = 'Mean Moiture %'),
-               plot_bgcolor = "gray95")
-    }
-
 
   })
 
   output$CO2ID <- renderPlotly({
-
-    pipae_all = pipae_all [pipae_all$parcela ==  input$parco2,]
 
     if (input$nivelco2 == "H") {
 
@@ -235,78 +171,43 @@ server <- function(input, output, session) {
                                          time=pipae_all$Time,
                                          media_nivel = input$nivelco2,
                                          variavel = "co2")
-    par(bty ="n", bg = "grey99", las =1,
-        family="serif")
-
 
     if (input$nivelco2 == "H"){
-      pipae_mediaCO2$nivel= pipae_mediaCO2$H
-      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
-      min = trunc (escala [1] - 100)
-      max = trunc (escala [2] + 100)
+      pipae_mediaCO2$nivel= pipae_mediaCO2$H } else if (
+        input$nivelco2 == "D"){pipae_mediaCO2$nivel= pipae_mediaCO2$D} else {
+          pipae_mediaCO2$nivel= pipae_mediaCO2$M
+        }
+
       if (nrow(pipae_mediaCO2) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
       }
+    date <- switch (input$nivelco2,
+                    "H"="Day",
+                    "D"="Month",
+                    "M"="Year")
+    var <- switch (input$nivelco2,
+                   "H" = "Hour",
+                   "D" = "Day",
+                   "M" = "Month")
 
-      plot (media_co2~nivel, data=pipae_mediaCO2,
-            type="n",
-            ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Hours",
-            main="CO\u2082\nmean by hour",
-            ylim = c(min, max),
-            xlim=c(0,23))
-
-      lines(media_co2~nivel, data=pipae_mediaCO2,
-            lty = 5, lwd =4,
-            col = "gray60")
-
-
-    } else if (input$nivelco2 == "D") {
-      pipae_mediaCO2$nivel= pipae_mediaCO2$D
-      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
-      min = trunc (escala [1] -100)
-      max = trunc (escala [2] + 100)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
-
-      plot (media_co2~nivel, data=pipae_mediaCO2,
-            type="n",
-            ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Days",
-            main="CO\u2082\nmean by day",
-            ylim = c(min, max),
-            xlim=c(0,30))
-
-      lines(media_co2~nivel, data=pipae_mediaCO2,
-            lty = 5, lwd =4,
-            col = "gray60")
-    } else {
-      pipae_mediaCO2$nivel=pipae_mediaCO2$M
-      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
-      min = trunc (escala [1] - 100)
-      max = trunc (escala [2] + 100)
-
-      plot (media_co2~nivel, data=pipae_mediaCO2,
-            type="n",
-            ylab=expression("Mean" ~ CO[2] ~ "ppm"),
-            xlab= "Months",
-            main="CO\u2082\nmean by month",
-            ylim = c(min, max) ,xlim=c(1,12))
-
-      lines(media_co2 ~nivel, data=pipae_mediaCO2 ,
-            lty = 5, lwd =4,
-            col = "gray60")
-    }
+    plot_ly(data=pipae_mediaCO2,
+            x=~nivel,
+            y=~media_co2,
+            color=~parcela,
+            type="scatter",
+            mode="lines") |>
+      layout(title= paste ("CO\u2082 mean by",
+                           date, sep = " "),
+             xaxis = list(title = var),
+             yaxis = list(title = 'Mean CO\u2082 ppm'),
+             plot_bgcolor = "gray95")
 
 
   })
 
   output$pressID <- renderPlotly({
-
-    pipae_all = pipae_all [pipae_all$parcela ==  input$parpress,]
 
     if (input$nivelpress == "H") {
 
@@ -326,72 +227,39 @@ server <- function(input, output, session) {
                                          time=pipae_all$Time,
                                          media_nivel = input$nivelpress,
                                          variavel = "pressao")
-    par(bty ="n", bg = "grey99", las =1,
-        family="serif")
-
 
     if (input$nivelpress == "H"){
-      pipae_mediapress$nivel= pipae_mediapress$H
-      escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
-      min = round (escala [1] - 0.25, 2)
-      max = round (escala [2] + 0.25, 2)
-      if (nrow(pipae_mediapress) == 0) {
+      pipae_mediapress$nivel= pipae_mediapress$H } else if (
+        input$nivelpress == "D"){
+        pipae_mediapress$nivel= pipae_mediapress$D} else {
+          pipae_mediapress$nivel= pipae_mediapress$M
+        }
+    if (nrow(pipae_mediapress) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
-      }
-
-      plot (media_pressao~nivel, data=pipae_mediapress,
-            type="n",
-            ylab="Mean Pressure", xlab= "Hours",
-            main="Pressure\nmean by hour",
-            ylim = c(min, max),
-            xlim=c(0,23))
-
-      lines(media_pressao~nivel, data=pipae_mediapress,
-            lty = 5, lwd =4,
-            col = "pink")
-
-
-    } else if (input$nivelpress == "D") {
-           pipae_mediapress$nivel= pipae_mediapress$D
-      escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
-      min = round(escala [1] -0.25, 2)
-      max = round (escala [2] + 0.25,2)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
-
-      plot (media_pressao~nivel, data=pipae_mediapress,
-            type="n",
-            ylab=expression("Mean Pressure"), xlab= "Days",
-            main="Pressure\nmean by day",
-            ylim = c(min, max),
-            xlim=c(0,30))
-
-      lines(media_pressao~nivel, data=pipae_mediapress,
-            lty = 5, lwd =4,
-            col = "pink")
-    } else {
-      pipae_mediapress$nivel=pipae_mediapress$M
-      escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
-      min = round (escala [1] - 0.25, 2)
-      max = round (escala [2] + 0.25, 2)
-
-      plot (media_pressao~nivel, data=pipae_mediapress,
-            type="n",
-            ylab=expression("Mean" ~ CO[2] ~ "ppm"),
-            xlab= "Months",
-            main="CO\u2082\nmean by month",
-            ylim = c(min, max) ,xlim=c(1,12))
-
-      lines(media_pressao ~nivel, data=pipae_mediapress ,
-            lty = 5, lwd =4,
-            col = "pink")
     }
-
+    date <- switch (input$nivelpress,
+                    "H"="Day",
+                    "D"="Month",
+                    "M"="Year")
+    var <- switch (input$nivelpress,
+                   "H" = "Hour",
+                   "D" = "Day",
+                   "M" = "Month")
+    browser()
+    head(pipae_mediapress)
+    plot_ly(data=pipae_mediapress,
+            x=~nivel,
+            y=~media_pressao,
+            color=~parcela,
+            type="scatter",
+            mode="lines") |>
+      layout(title= paste ("atmospheric pressure mean by",
+                           date, sep = " "),
+             xaxis = list(title = var),
+             yaxis = list(title = 'atmospheric pressure Pa'),
+             plot_bgcolor = "gray95")
 
   })
 
