@@ -16,6 +16,7 @@ get_dados_separados = function ( data, x, date=NULL, time=NULL,
   if (is.character(date)==TRUE) {
     date <- dmy (date)
   }
+  browser()
   data$date <- date
   data <- data |>
     mutate (D=day(data$date),

@@ -79,8 +79,11 @@ server <- function(input, output, session) {
         "D" = "Day",
         "M" = "Month")
 
+
+     names (pipae_mediatemperatura)[1] <- "nivel_var"
+
       plot_ly(data=pipae_mediatemperatura,
-              x=~nivel,
+              x=~nivel_var,
               y=~media_temperatura,
               color=~parcela,
               type="scatter",
@@ -115,10 +118,10 @@ server <- function(input, output, session) {
                                              variavel = "umidade")
 
     if (input$nivelmoisture == "H"){
-      pipae_mediaumidade$nivel= pipae_mediaumidade$H} else if (
+      pipae_mediaumidade$nivelmoisture= pipae_mediaumidade$H} else if (
         input$nivelmoisture == "D"){
-        pipae_mediaumidade$nivel= pipae_mediaumidade$D}else{
-          pipae_mediaumidade$nivel= pipae_mediaumidade$M
+        pipae_mediaumidade$nivelmoisture= pipae_mediaumidade$D}else{
+          pipae_mediaumidade$nivelmoisture= pipae_mediaumidade$M
         }
 
       if (nrow(pipae_mediaumidade) == 0) {
@@ -136,10 +139,11 @@ server <- function(input, output, session) {
                    "H" = "Hour",
                    "D" = "Day",
                    "M" = "Month")
+    names (pipae_mediaumidade)[1] <- "nivel_var"
 
 
       plot_ly(data=pipae_mediaumidade,
-              x=~nivel,
+              x=~nivel_var,
               y=~media_umidade,
               color=~parcela,
               type="scatter",
@@ -173,9 +177,9 @@ server <- function(input, output, session) {
                                          variavel = "co2")
 
     if (input$nivelco2 == "H"){
-      pipae_mediaCO2$nivel= pipae_mediaCO2$H } else if (
-        input$nivelco2 == "D"){pipae_mediaCO2$nivel= pipae_mediaCO2$D} else {
-          pipae_mediaCO2$nivel= pipae_mediaCO2$M
+      pipae_mediaCO2$nivelco2= pipae_mediaCO2$H } else if (
+        input$nivelco2 == "D"){pipae_mediaCO2$nivelco2= pipae_mediaCO2$D} else {
+          pipae_mediaCO2$nivelco2= pipae_mediaCO2$M
         }
 
       if (nrow(pipae_mediaCO2) == 0) {
@@ -192,8 +196,10 @@ server <- function(input, output, session) {
                    "D" = "Day",
                    "M" = "Month")
 
+    names (pipae_mediaCO2)[1] <- "nivel_var"
+
     plot_ly(data=pipae_mediaCO2,
-            x=~nivel,
+            x=~nivel_var,
             y=~media_co2,
             color=~parcela,
             type="scatter",
@@ -229,10 +235,10 @@ server <- function(input, output, session) {
                                          variavel = "pressao")
 
     if (input$nivelpress == "H"){
-      pipae_mediapress$nivel= pipae_mediapress$H } else if (
+      pipae_mediapress$nivelpress= pipae_mediapress$H } else if (
         input$nivelpress == "D"){
-        pipae_mediapress$nivel= pipae_mediapress$D} else {
-          pipae_mediapress$nivel= pipae_mediapress$M
+        pipae_mediapress$nivelpress= pipae_mediapress$D} else {
+          pipae_mediapress$nivelpress= pipae_mediapress$M
         }
     if (nrow(pipae_mediapress) == 0) {
         stop (safeError(
@@ -247,10 +253,11 @@ server <- function(input, output, session) {
                    "H" = "Hour",
                    "D" = "Day",
                    "M" = "Month")
-    browser()
-    head(pipae_mediapress)
+
+    names (pipae_mediapress)[1] <- "nivel_var"
+
     plot_ly(data=pipae_mediapress,
-            x=~nivel,
+            x=~nivel_var,
             y=~media_pressao,
             color=~parcela,
             type="scatter",
