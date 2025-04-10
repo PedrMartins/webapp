@@ -313,9 +313,10 @@ server <- function(input, output, session) {
     pipaes <- c(unique(pipae_all$tag))
     status <- data.frame()
     for (pipae in pipaes) {
+
       sensor=pipae_all [pipae_all$tag==pipae,]
       diff <- time_length(Sys.Date()-
-                            sensor$Date [length(sensor$Date)],
+                            sensor$DateTime [length(sensor$DateTime)],
                           unit="day")
       if (is.na(diff)) {
         next
