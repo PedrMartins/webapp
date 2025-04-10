@@ -3,27 +3,19 @@ get_dados_separados = function ( data, x, date=NULL, time=NULL,
                                 media_nivel = "D", variavel = "co2"
                                 ,  ...) {
 
-  required_pkgs <- c("lubridate", "dplyr")
-  missing_pkgs <- required_pkgs[!(required_pkgs %in% installed.packages()[, "Package"])]
-  if (length(missing_pkgs) > 0) {
-    stop("Instalar pacotes: ", paste(missing_pkgs, collapse = ", "))
-  }
-  lapply(required_pkgs, library, character.only = TRUE)
-
   if (is.null(date)==TRUE) {
     stop ("Argumento 'date' ausente")
   }
   if (is.character(date)==TRUE) {
     date <- dmy (date)
   }
-  browser()
   data$date <- date
   data <- data |>
     mutate (D=day(data$date),
             M= month(data$date),
             Y= year(data$date))
 
-
+  browser ()
   nivel <- intersect(c("H", "D", "M"), media_nivel)
   var <- intersect(c ("co2","temperatura","umidade", "pressao"), variavel)
   if (nivel== "H" & is.null(time)==TRUE) {
