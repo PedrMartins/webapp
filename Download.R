@@ -42,18 +42,9 @@ Download <- tabPanel("Download Data",
                          width = 2
                        ), #sidebarpanel end
                        mainPanel (
-                         tabsetPanel(type="tab",
-                          tabPanel ("Preview Chart",
-                                    plotOutput (outputId = "plotDown"),
-                                    downloadButton("downplot","Download Plot",
-                                                   class = "custom-download-btn")
-                                    ),
-                          tabPanel ("Preview Table",
-                                    dataTableOutput(outputId="tableDown"),
-                                    downloadButton("downtab","Download Data",
-                                                   class = "custom-download-btn")
-                                    )
-                         )
+                         dataTableOutput(outputId="tableDown"),
+                         downloadButton("downtab","Download Data",
+                                        class = "custom-download-btn")
                        )#mainplanel end
                      ) #sidebar layout end
 ) #tabpanel2 end co2

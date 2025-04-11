@@ -10,18 +10,33 @@ variable <- tabPanel ("Variable",
                              "Barometer"="bar"),
                 selected = "temp"
               ),
-              checkboxGroupInput(inputId= "parVar",
-                                 label = "Parcel",
-                                 choiceValues =  sort (unique (pipae_all$parcela)),
-                                 choiceNames = c("Parcel 1", "Parcel 2",
-                                                 "Parcel 3", "Parcel 4"),
-                                 selected = "par1"),
+              selectInput(inputId = "dayvar",
+                          label = "Day",
+                          choices = unique(sort(pipae_all$D)),
+                          selected = day(Sys.time()),
+                          width = "100px"),
+              selectInput(inputId = "monthvar",
+                          label = "Month",
+                          choices = unique(pipae_all$M),
+                          selected = month(Sys.Date()),,
+                          width = "100px"),
+              selectInput(inputId = "yearvar",
+                          label = "Year",
+                          choices = unique(pipae_all$Y),
+                          selected = year(Sys.Date()),
+                          width = "100px"),
               width = 3
             ),
 
 
             mainPanel(
-              plotOutput(outputId = "boxplotvarID")
+              tabsetPanel (type="tab",
+                tabPanel ("CO\u2082",
+                  plotlyOutput(outputId = "boxplotvarID")
+                )
+
+                )
+
             )
           )
 

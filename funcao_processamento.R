@@ -2,7 +2,6 @@
 get_dados_separados = function ( data, x, date=NULL, time=NULL,
                                 media_nivel = "D", variavel = "co2"
                                 ,  ...) {
-
   if (is.null(date)==TRUE) {
     stop ("Argumento 'date' ausente")
   }
@@ -15,7 +14,7 @@ get_dados_separados = function ( data, x, date=NULL, time=NULL,
             M= month(data$date),
             Y= year(data$date))
 
-  browser ()
+
   nivel <- intersect(c("H", "D", "M"), media_nivel)
   var <- intersect(c ("co2","temperatura","umidade", "pressao"), variavel)
   if (nivel== "H" & is.null(time)==TRUE) {
@@ -29,6 +28,7 @@ get_dados_separados = function ( data, x, date=NULL, time=NULL,
         m=minute(data$time),
         H=hour(data$time))
   }
+  View (data)
 
   if (length(nivel) != 1 | length (var) !=1 ) {
     stop("\t Argumentos 'media_nivel' ou 'variavel' ausente \n \t ou com erro na digitação")
@@ -41,6 +41,7 @@ get_dados_separados = function ( data, x, date=NULL, time=NULL,
     group_by (across(all_of(nivel))) |>
     summarise(!!var2:=mean(variavel, na.rm = TRUE)) #' !! : operador retorna o interior
   #'de um objeto
+
 
   dataM = dataM |>
     left_join(data,dataM, by =nivel)

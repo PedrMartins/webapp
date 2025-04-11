@@ -271,20 +271,12 @@ server <- function(input, output, session) {
   })
 
   output$boxplotvarID <-renderPlotly({
-
-    parcels <- input$parVar
-    result <- data.frame()
-    if (length (parcels)==0) {
-      stop (safeError(
-        "\n Select a parcel")
-      )
-    }
-    for (parcel in parcels) {
-      result <- rbind(result, pipae_all[pipae_all$parcela == parcel, ])
-    }
+    browser()
 
 
-    pipae_all <- result
+    pipae_all = pipae_all [ pipae_all$D == input$dayvar &
+                              pipae_all$M == input$monthvar &
+                              pipae_all$Y == input$yearvar,]
 
 
     names (pipae_all)[c(3,4,5,6,17)] <-  c("temp",
@@ -292,21 +284,12 @@ server <- function(input, output, session) {
                                           "umi",
                                           "CO2",
                                           "parcel")
-    vars <- input$var
 
-    if (length(vars) > 0) {
-      par(mfrow = c(1,length(vars)), bty = "n",
-          bg = "grey99", family="serif")
-      col = colorRampPalette(c("darkred", "lightblue"))
-      for (var in vars) {
-        boxplot(as.formula(paste(var, "~ parcel")),
-                data = pipae_all, main = var, col =
-                  col(length(unique(pipae_all$parcel))),
-                pch="*")
-
-        }
-
-    }
+    plot_ly(data= pipae_all,
+            type = "box",
+            x= ~parcel,
+            y= ~CO2,
+            color=~parcel)
   })
 
   output$table <- renderDataTable({
