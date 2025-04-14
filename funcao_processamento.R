@@ -28,7 +28,6 @@ get_dados_separados = function ( data, x, date=NULL, time=NULL,
         m=minute(data$time),
         H=hour(data$time))
   }
-  View (data)
 
   if (length(nivel) != 1 | length (var) !=1 ) {
     stop("\t Argumentos 'media_nivel' ou 'variavel' ausente \n \t ou com erro na digitação")

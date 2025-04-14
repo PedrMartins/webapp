@@ -7,7 +7,7 @@ variable <- tabPanel ("Variable",
                           selected = day(Sys.time()),
                           multiple=TRUE),
               radioButtons(inputId = "intervalday_var",
-                           label = "Interval Year",
+                           label = "Interval Day",
                            choices =  c("To"="to",
                                         "And"="and"),
                            selected = "and",
@@ -18,7 +18,7 @@ variable <- tabPanel ("Variable",
                           selected = month(Sys.Date()),
                           multiple=TRUE),
               radioButtons(inputId = "intervalmonth_var",
-                           label = "Interval Year",
+                           label = "Interval Month",
                            choices =  c("To"="to",
                                         "And"="and"),
                            selected = "and",
@@ -40,8 +40,7 @@ variable <- tabPanel ("Variable",
                                       "Barometre"="bar",
                                       "Moisture"="umi",
                                       "CO\u2082"="CO2")
-                          ),
-              width = 3
+                          )
             ),
 
 

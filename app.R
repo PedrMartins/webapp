@@ -272,10 +272,34 @@ server <- function(input, output, session) {
 
   output$boxplotvarID <-renderPlotly({
 
+    days <- input$dayvar
 
-    pipae_all = pipae_all [ pipae_all$D == input$dayvar &
-                              pipae_all$M == input$monthvar &
-                              pipae_all$Y == input$yearvar,]
+    if (input$intervalday_var == "to") {
+      max=range (days) [2]
+      min=range (days) [1]
+      days = c (min:max)
+    }else {days <- as.integer(days)}
+
+    month <- input$monthvar
+
+    if (input$intervalmonth_var == "to") {
+      max=range (month) [2]
+      min=range (month) [1]
+      month = c (min:max)
+    }else {month <- as.integer(month)}
+
+    year <- input$yearvar
+
+    if (input$intervalyear_var == "to") {
+      max=range (year) [2]
+      min=range (year) [1]
+      year = c (min:max)
+    }else {year <- as.integer(year)}
+
+
+    pipae_all <- pipae_all [ pipae_all$D == days &
+                              pipae_all$M == month &
+                              pipae_all$Y == year,]
 
 
     names (pipae_all)[c(3,4,5,6,17)] <-  c("temp",
@@ -283,17 +307,18 @@ server <- function(input, output, session) {
                                           "umi",
                                           "CO2",
                                           "parcel")
-    switch(input$vari,
-           "temp",
-           "bar",
-           "umi",
-           "CO2")
+    variavel <- switch(input$vari,
+           temp="temp",
+           bar="bar",
+           umi="umi",
+           CO2="CO2")
 
     plot_ly(data= pipae_all,
             type = "box",
             x= ~parcel,
-            y= ~CO2,
+            y= as.formula(paste0("~", variavel)),
             color=~parcel)
+
   })
 
   output$table <- renderDataTable({
