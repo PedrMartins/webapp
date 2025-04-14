@@ -40,7 +40,8 @@ variable <- tabPanel ("Variable",
                                       "Barometre"="bar",
                                       "Moisture"="umi",
                                       "CO\u2082"="CO2")
-                          )
+                          ),
+              width = 3
             ),
 
 

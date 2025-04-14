@@ -39,7 +39,7 @@ Download <- tabPanel("Download Data",
                                                   "Barometer"="pressao",
                                                   "All Variables"="no_one"),
                                       selected = "no_one"),
-                         width = 2
+                         width = 3
                        ), #sidebarpanel end
                        mainPanel (
                          dataTableOutput(outputId="tableDown"),

@@ -313,11 +313,28 @@ server <- function(input, output, session) {
            umi="umi",
            CO2="CO2")
 
+    name_var <- switch(input$vari,
+                       temp="Temperature",
+                       bar="Pressure",
+                       umi="Moisture",
+                       CO2="CO\u2082")
+    unit <- switch(input$vari,
+                   temp="ºC",
+                   bar="Pa",
+                   umi="%",
+                   CO2="ppm")
+
     plot_ly(data= pipae_all,
             type = "box",
             x= ~parcel,
             y= as.formula(paste0("~", variavel)),
-            color=~parcel)
+            color=~parcel) |>
+    layout(title= paste ("Boxplot ",name_var,
+                         "\n ",sep = " "),
+           xaxis = list(title = "Parcel"),
+           yaxis = list(title = paste (name_var,
+                                       unit, sep = " ")),
+           plot_bgcolor = "gray95")
 
   })
 
