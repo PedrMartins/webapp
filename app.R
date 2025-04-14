@@ -271,7 +271,6 @@ server <- function(input, output, session) {
   })
 
   output$boxplotvarID <-renderPlotly({
-    browser()
 
 
     pipae_all = pipae_all [ pipae_all$D == input$dayvar &
@@ -284,6 +283,11 @@ server <- function(input, output, session) {
                                           "umi",
                                           "CO2",
                                           "parcel")
+    switch(input$vari,
+           "temp",
+           "bar",
+           "umi",
+           "CO2")
 
     plot_ly(data= pipae_all,
             type = "box",
@@ -296,16 +300,16 @@ server <- function(input, output, session) {
     pipaes <- c(unique(pipae_all$tag))
     status <- data.frame()
     for (pipae in pipaes) {
-
       sensor=pipae_all [pipae_all$tag==pipae,]
-      diff <- time_length(Sys.Date()-
-                            sensor$DateTime [length(sensor$DateTime)],
-                          unit="day")
+      time <- as_date(sensor$Time [length(sensor$Time)])
+      int <- interval(Sys.Date(),time)
+      diff <- time_length (int, "hour")
+
       if (is.na(diff)) {
         next
       }
 
-      if (diff > 0) {
+      if (diff < 24) {
         test <- data.frame(sensor=as.character (pipae),
                            dias=as.character(sensor$Date [length(sensor$Date)]),
                            parcela=unique (sensor$parcela),
@@ -322,7 +326,7 @@ server <- function(input, output, session) {
     }
     names (status) <- c("Sensor","Last Received",
                         "Parcel","Working",
-                        paste ("Sample size", "on", Sys.Date(), sep = " "))
+                        paste ("Sample size on", Sys.Date(), sep = " "))
     status
   })
 
