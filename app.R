@@ -341,28 +341,43 @@ server <- function(input, output, session) {
   output$table <- renderDataTable({
     pipaes <- c(unique(pipae_all$tag))
     status <- data.frame()
+    now <- Sys.time()
+    last_24h <- now - hours(24)
+
     for (pipae in pipaes) {
       sensor=pipae_all [pipae_all$tag==pipae,]
-      time <- as_date(sensor$Time [length(sensor$Time)])
-      int <- interval(Sys.Date(),time)
+      time <- sensor$DateTime [length(sensor$DateTime)]
+      int <- interval(Sys.time(),time)
       diff <- time_length (int, "hour")
+      diff <- abs(diff)
 
       if (is.na(diff)) {
         next
       }
 
-      if (diff < 24) {
+      if (diff > 24) {
+
+        packs <- sensor %>%
+          filter(DateTime >= now - hours(24), DateTime <= now) %>%
+          nrow()
+
         test <- data.frame(sensor=as.character (pipae),
                            dias=as.character(sensor$Date [length(sensor$Date)]),
                            parcela=unique (sensor$parcela),
                            status="No",
-                           packs=dim(sensor[sensor$Date==Sys.Date(),])[1])
+                           packs=packs)
+
+
       }else {
+        packs <- sensor %>%
+          filter(DateTime >= now - hours(24), DateTime <= now) %>%
+          nrow()
+
         test  <- data.frame(sensor=as.character (pipae),
                             dias=as.character(sensor$Date [length(sensor$Date)]),
                             parcela=unique (sensor$parcela),
                             status="Yes",
-                            packs=dim(sensor[sensor$Date==Sys.Date(),])[1])
+                            packs=packs)
       }
       status <-  rbind(status,test)
     }
