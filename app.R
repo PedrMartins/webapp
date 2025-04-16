@@ -260,10 +260,10 @@ server <- function(input, output, session) {
             color=~parcela,
             type="scatter",
             mode="lines") |>
-      layout(title= paste ("atmospheric pressure mean by",
+      layout(title= paste ("Atmospheric Pressure mean by",
                            date, sep = " "),
              xaxis = list(title = var),
-             yaxis = list(title = 'atmospheric pressure Pa'),
+             yaxis = list(title = 'Atmospheric Pressure Pa'),
              plot_bgcolor = "gray95")
 
   })
