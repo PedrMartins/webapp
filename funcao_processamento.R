@@ -1,7 +1,7 @@
 
 get_dados_separados = function ( data, x, date=NULL, time=NULL,
                                 media_nivel = "D", variavel = "co2"
-                                , parcel = TRUE, sensor = FALSE, ...) {
+                                , ...) {
 
   if (is.null(date)==TRUE) {
     stop ("Argumento 'date' ausente")
@@ -36,46 +36,47 @@ get_dados_separados = function ( data, x, date=NULL, time=NULL,
   var2=paste("media", var, sep="_")
 
   data$variavel <- x
-
-  dataM = data |>
-    group_by (across(all_of(nivel))) |>
-    summarise(!!var2:=mean(variavel, na.rm = TRUE)) #' !! : operador retorna o interior
-  #'de um objeto
-
-
-  dataM = dataM |>
-    left_join(data,dataM, by =nivel)
-
+  parcelas <- unique(data$parcela)
+  for_data <- data.frame()
   #' fazer um for para mantar as parcelas ou as pipaes
   #' ou fazer dois um para a parcela e um para senores
   #' depois colocar na interface de usuário
-  if (parcel==TRUE){
 
-  parcelas <- unique(dataM$parcela)
-  for_data <- data.frame()
 
-  for (parcel in parcelas){
-    deleted_duplicated <- dataM[dataM$parcela==parcel,]
+  for (parcela in parcelas){
+    data_parcela_filtered <- data[data$parcela==parcela,]
 
-    if (nrow(deleted_duplicated)==0){
+    data_duplicated = data_parcela_filtered |>
+      group_by (across(all_of(nivel))) |>
+      summarise(!!var2:=mean(variavel, na.rm = TRUE))
+
+    #'!! : operador retorna o interior
+    #'de um objeto
+
+    data_duplicated = data_duplicated |>
+      left_join(data_parcela_filtered,data_duplicated, by =nivel)
+
+   if (nrow(data_duplicated)==0){
       next
     }
-      if (nivel == "H"){
-      deleted_duplicated$HD <- paste(deleted_duplicated$H,
-                                     deleted_duplicated$D,sep ="_")
-      deleted_duplicated <- deleted_duplicated [!duplicated(deleted_duplicated$HD),]
+
+    if (nivel == "H"){
+      data_duplicated$HD <- paste(data_duplicated$H,
+                                  data_duplicated$D,sep ="_")
+      deleted_duplicated <- data_duplicated [!duplicated(data_duplicated$HD),]
     } else if (nivel== "M") {
-      deleted_duplicated$M_Y <- paste (deleted_duplicated$M,
-                          deleted_duplicated$Y, sep="-")
-      deleted_duplicated <- deleted_duplicated [!duplicated(deleted_duplicated$M_Y),]
+      data_duplicated$M_Y <- paste (data_duplicated$M,
+                                    data_duplicated$Y, sep="-")
+      deleted_duplicated <- data_duplicated [!duplicated(data_duplicated$M_Y),]
     } else {
-      deleted_duplicated <- deleted_duplicated [!duplicated(deleted_duplicated$date),]
+      deleted_duplicated <- data_duplicated [!duplicated(data_duplicated$date),]
     }
 
     for_data <- rbind(deleted_duplicated,for_data)
   }
+
   dataM <- for_data
-}
+
   dataM = dataM [order(dataM$date),]
   excluir <- c("time", "date", "HD","m", "M_Y", "variavel")
   dataM <- dataM[,!(names(dataM)%in% excluir)]
