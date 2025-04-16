@@ -35,7 +35,6 @@ ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
 
 server <- function(input, output, session) {
 
-
   output$TemperatureID <- renderPlotly({
 
     if (input$nivel == "H") {
@@ -95,7 +94,6 @@ server <- function(input, output, session) {
              plot_bgcolor = "gray95")
 
   })
-
 
   output$MoistureID <- renderPlotly({
 
@@ -383,7 +381,7 @@ server <- function(input, output, session) {
     }
     names (status) <- c("Sensor","Last Received",
                         "Parcel","Working",
-                        paste ("Sample size on", Sys.Date(), sep = " "))
+                        "Sample size at the last 24 hours")
     status
   })
 

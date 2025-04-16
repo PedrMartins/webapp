@@ -1,7 +1,8 @@
 
 get_dados_separados = function ( data, x, date=NULL, time=NULL,
                                 media_nivel = "D", variavel = "co2"
-                                ,  ...) {
+                                , parcel = TRUE, sensor = FALSE, ...) {
+
   if (is.null(date)==TRUE) {
     stop ("Argumento 'date' ausente")
   }
@@ -44,16 +45,37 @@ get_dados_separados = function ( data, x, date=NULL, time=NULL,
 
   dataM = dataM |>
     left_join(data,dataM, by =nivel)
-   if (nivel == "H"){
-    dataM$HD <- paste(dataM$H, dataM$D,sep ="_")
-    dataM <- dataM [!duplicated(dataM$HD),]
-  } else if (nivel== "M") {
-    dataM$M_Y <- paste (dataM$M,dataM$Y, sep="-")
-    dataM <- dataM [!duplicated(dataM$M_Y),]
-  } else {
-    dataM <- dataM [!duplicated(dataM$date),]
-  }
 
+  #' fazer um for para mantar as parcelas ou as pipaes
+  #' ou fazer dois um para a parcela e um para senores
+  #' depois colocar na interface de usuário
+  if (parcel==TRUE){
+
+  parcelas <- unique(dataM$parcela)
+  for_data <- data.frame()
+
+  for (parcel in parcelas){
+    deleted_duplicated <- dataM[dataM$parcela==parcel,]
+
+    if (nrow(deleted_duplicated)==0){
+      next
+    }
+      if (nivel == "H"){
+      deleted_duplicated$HD <- paste(deleted_duplicated$H,
+                                     deleted_duplicated$D,sep ="_")
+      deleted_duplicated <- deleted_duplicated [!duplicated(deleted_duplicated$HD),]
+    } else if (nivel== "M") {
+      deleted_duplicated$M_Y <- paste (deleted_duplicated$M,
+                          deleted_duplicated$Y, sep="-")
+      deleted_duplicated <- deleted_duplicated [!duplicated(deleted_duplicated$M_Y),]
+    } else {
+      deleted_duplicated <- deleted_duplicated [!duplicated(deleted_duplicated$date),]
+    }
+
+    for_data <- rbind(deleted_duplicated,for_data)
+  }
+  dataM <- for_data
+}
   dataM = dataM [order(dataM$date),]
   excluir <- c("time", "date", "HD","m", "M_Y", "variavel")
   dataM <- dataM[,!(names(dataM)%in% excluir)]
