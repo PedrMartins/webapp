@@ -87,7 +87,8 @@ server <- function(input, output, session) {
               y=~media_temperatura,
               color=~parcela,
               type="scatter",
-              mode="lines") |>
+              mode="lines+markers",
+              marker = list(symbol="diamond")) |>
       layout(title= paste ("Temperature mean by",
                            date, sep = " "),
              xaxis = list(title = var),
