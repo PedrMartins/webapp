@@ -1,27 +1,52 @@
 variable <- tabPanel ("Variable",
           sidebarLayout(
             sidebarPanel (
-              checkboxGroupInput (
-                inputId = "var",
-                label = "Variable",
-                choices = c ("CO\u2082" ="CO2",
-                             "Temperature" = "temp",
-                             "Moisture"= "umi",
-                             "Barometer"="bar"),
-                selected = "temp"
-              ),
-              checkboxGroupInput(inputId= "parVar",
-                                 label = "Parcel",
-                                 choiceValues =  sort (unique (pipae_all$parcela)),
-                                 choiceNames = c("Parcel 1", "Parcel 2",
-                                                 "Parcel 3", "Parcel 4"),
-                                 selected = "par1"),
+              selectizeInput(inputId = "dayvar",
+                          label = "Day",
+                          choices = unique(sort(pipae_all$D)),
+                          selected = day(Sys.time()),
+                          multiple=TRUE),
+              radioButtons(inputId = "intervalday_var",
+                           label = "Interval Day",
+                           choices =  c("To"="to",
+                                        "And"="and"),
+                           selected = "and",
+                           inline = TRUE),
+              selectizeInput(inputId = "monthvar",
+                          label = "Month",
+                          choices = unique(pipae_all$M),
+                          selected = month(Sys.Date()),
+                          multiple=TRUE),
+              radioButtons(inputId = "intervalmonth_var",
+                           label = "Interval Month",
+                           choices =  c("To"="to",
+                                        "And"="and"),
+                           selected = "and",
+                           inline = TRUE),
+              selectizeInput(inputId = "yearvar",
+                          label = "Year",
+                          choices = unique(pipae_all$Y),
+                          selected = year(Sys.Date()),
+                          multiple=TRUE),
+              radioButtons(inputId = "intervalyear_var",
+                           label = "Interval Year",
+                           choices =  c("To"="to",
+                                        "And"="and"),
+                           selected = "and",
+                           inline = TRUE),
+              radioButtons(inputId = "vari",
+                          label = "Variables",
+                          choices = c("Tempretura"="temp",
+                                      "Barometre"="bar",
+                                      "Moisture"="umi",
+                                      "CO\u2082"="CO2")
+                          ),
               width = 3
             ),
 
 
             mainPanel(
-              plotOutput(outputId = "boxplotvarID")
+              plotlyOutput(outputId = "boxplotvarID")
             )
           )
 

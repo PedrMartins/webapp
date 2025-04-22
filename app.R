@@ -35,11 +35,8 @@ ui= fluidPage(theme = shinytheme("flatly"),# theme = "cerulean",
 
 server <- function(input, output, session) {
 
-
   output$TemperatureID <- renderPlotly({
 
-
-    pipae_all = pipae_all [pipae_all$parcela ==  input$par,]
     if (input$nivel == "H") {
 
       pipae_all = pipae_all [ pipae_all$D == input$day &
@@ -48,6 +45,7 @@ server <- function(input, output, session) {
     } else if (input$nivel == "M" ) {
       pipae_all = pipae_all [pipae_all$Y == input$year,]
     } else {
+
       pipae_all = pipae_all [ pipae_all$M == input$month &
                                 pipae_all$Y == input$year,]
     }
@@ -60,7 +58,10 @@ server <- function(input, output, session) {
                                                  variavel = "temperatura")
 
     if (input$nivel == "H"){
-      pipae_mediatemperatura$nivel= pipae_mediatemperatura$H
+      pipae_mediatemperatura$nivel= pipae_mediatemperatura$H } else if (
+        input$nivel == "D"){
+        pipae_mediatemperatura$nivel= pipae_mediatemperatura$D
+      } else {pipae_mediatemperatura$nivel= pipae_mediatemperatura$M}
 
       if (nrow(pipae_mediatemperatura) == 0) {
         stop (safeError(
@@ -68,67 +69,35 @@ server <- function(input, output, session) {
         )
       }
 
-      plot_ly(
-        data = pipae_mediatemperatura,
-        x = ~Date,
-        y = ~Temperature,
-        type="scatter",
-        mode="lines"
-      )
+      date <- switch (input$nivel,
+              "H"="Day",
+              "D"="Month",
+              "M"="Year")
+      var <- switch (input$nivel,
+        "H" = "Hour",
+        "D" = "Day",
+        "M" = "Month")
 
 
-    }else if (input$nivel=="D") {
-      pipae_mediatemperatura$nivel= pipae_mediatemperatura$D
-      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
+     names (pipae_mediatemperatura)[1] <- "nivel_var"
 
-
-      plot (media_temperatura~nivel,
-            data=pipae_mediatemperatura, type="n",
-            ylab="Mean temperature ºC", xlab= "Days",
-            main="Temperature\nmean by day",
-            ylim = c(min,max) ,xlim=c(0,30))
-
-      lines(media_temperatura ~nivel,
-            data=pipae_mediatemperatura ,
-            lty = 5, lwd =4,
-            col = "darkorange")
-
-
-    } else {
-      pipae_mediatemperatura$nivel=pipae_mediatemperatura$M
-      escala = range(pipae_mediatemperatura$media_temperatura, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
-
-      plot (media_temperatura~nivel,
-            data=pipae_mediatemperatura,
-            type="n",ylab="Mean temperature ºC",
-            xlab= "Months",
-            main="Temperature\nmean by month",
-            ylim = c(min,max) ,xlim=c(1,12))
-
-      lines(media_temperatura ~nivel,
-            data=pipae_mediatemperatura ,
-            lty = 5, lwd =4,
-            col = "darkorange")
-
-
-    }
-
+      plot_ly(data=pipae_mediatemperatura,
+              x=~nivel_var,
+              y=~media_temperatura,
+              color=~parcela,
+              type="scatter",
+              mode="lines") |>
+      layout(title= paste ("Temperature mean by",
+                           date, sep = " "),
+             xaxis = list(title = var),
+             yaxis = list(title = 'Mean Temperature ºC'),
+             plot_bgcolor = "gray95")
 
   })
 
+  output$MoistureID <- renderPlotly({
 
-  output$MoistureID <- renderPlot({
 
-    pipae_all = pipae_all [pipae_all$parcela ==  input$parmoisture,]
     if (input$nivelmoisture == "H") {
       pipae_all = pipae_all [ pipae_all$D == input$daymoisture &
                           pipae_all$M == input$monthmoisture &
@@ -145,79 +114,47 @@ server <- function(input, output, session) {
                                              time=pipae_all$Time,
                                              media_nivel = input$nivelmoisture,
                                              variavel = "umidade")
-    par( bty ="n", bg = "grey99", las =1,
-         family="serif")
 
     if (input$nivelmoisture == "H"){
-      pipae_mediaumidade$nivel= pipae_mediaumidade$H
-      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
+      pipae_mediaumidade$nivelmoisture= pipae_mediaumidade$H} else if (
+        input$nivelmoisture == "D"){
+        pipae_mediaumidade$nivelmoisture= pipae_mediaumidade$D}else{
+          pipae_mediaumidade$nivelmoisture= pipae_mediaumidade$M
+        }
+
       if (nrow(pipae_mediaumidade) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
       }
 
-      plot (media_umidade~nivel,
-            data=pipae_mediaumidade, type="n",
-            ylab="Mean moisture %", xlab= "Hours",
-            main="Moisture\nmean by hour",
-            ylim = c(min, max),
-            xlim=c(0,23))
+    date <- switch (input$nivelmoisture,
+                    "H"="Day",
+                    "D"="Month",
+                    "M"="Year")
 
-      lines(media_umidade~nivel, data=pipae_mediaumidade,
-            lty = 5, lwd =4,
-            col = "darkblue")
-
-
-    } else if (input$nivelmoisture == "D") {
-
-      pipae_mediaumidade$nivel= pipae_mediaumidade$D
-      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
+    var <- switch (input$nivelmoisture,
+                   "H" = "Hour",
+                   "D" = "Day",
+                   "M" = "Month")
+    names (pipae_mediaumidade)[1] <- "nivel_var"
 
 
-      plot (media_umidade~nivel,
-            data=pipae_mediaumidade, type="n",
-            ylab="Mean Moisture %", xlab= "Days",
-            main="Moisture\nmean by day",
-            ylim = c(min, max),
-            xlim=c(0,30))
+      plot_ly(data=pipae_mediaumidade,
+              x=~nivel_var,
+              y=~media_umidade,
+              color=~parcela,
+              type="scatter",
+              mode="lines") |>
+        layout(title= paste ("Moiture mean by",
+                             date, sep = " "),
+               xaxis = list(title = var),
+               yaxis = list(title = 'Mean Moiture %'),
+               plot_bgcolor = "gray95")
 
-      lines(media_umidade~nivel, data=pipae_mediaumidade ,
-            lty = 5, lwd =4,
-            col = "darkblue")
-    } else {
-      pipae_mediaumidade$nivel=pipae_mediaumidade$M
-      escala = range(pipae_mediaumidade$media_umidade, na.rm = TRUE)
-      min = trunc (escala [1] - 10)
-      max = trunc (escala [2] + 10)
+  })
 
-      plot (media_umidade~nivel, data=pipae_mediaumidade,
-            type="n",
-            ylab="Mean Moisture %", xlab= "Months",
-            main="Moisture\nmean by month",
-            ylim = c(min, max),
-            xlim=c(1,12))
-
-      lines(media_umidade ~nivel, data=pipae_mediaumidade ,
-            lty = 5, lwd =4,
-            col = "darkblue")
-    }
-
-
-  },res=96)
-
-  output$CO2ID <- renderPlot({
-
-    pipae_all = pipae_all [pipae_all$parcela ==  input$parco2,]
+  output$CO2ID <- renderPlotly({
 
     if (input$nivelco2 == "H") {
 
@@ -236,78 +173,45 @@ server <- function(input, output, session) {
                                          time=pipae_all$Time,
                                          media_nivel = input$nivelco2,
                                          variavel = "co2")
-    par(bty ="n", bg = "grey99", las =1,
-        family="serif")
-
 
     if (input$nivelco2 == "H"){
-      pipae_mediaCO2$nivel= pipae_mediaCO2$H
-      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
-      min = trunc (escala [1] - 100)
-      max = trunc (escala [2] + 100)
+      pipae_mediaCO2$nivelco2= pipae_mediaCO2$H } else if (
+        input$nivelco2 == "D"){pipae_mediaCO2$nivelco2= pipae_mediaCO2$D} else {
+          pipae_mediaCO2$nivelco2= pipae_mediaCO2$M
+        }
+
       if (nrow(pipae_mediaCO2) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
       }
+    date <- switch (input$nivelco2,
+                    "H"="Day",
+                    "D"="Month",
+                    "M"="Year")
+    var <- switch (input$nivelco2,
+                   "H" = "Hour",
+                   "D" = "Day",
+                   "M" = "Month")
 
-      plot (media_co2~nivel, data=pipae_mediaCO2,
-            type="n",
-            ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Hours",
-            main="CO\u2082\nmean by hour",
-            ylim = c(min, max),
-            xlim=c(0,23))
+    names (pipae_mediaCO2)[1] <- "nivel_var"
 
-      lines(media_co2~nivel, data=pipae_mediaCO2,
-            lty = 5, lwd =4,
-            col = "gray60")
-
-
-    } else if (input$nivelco2 == "D") {
-      pipae_mediaCO2$nivel= pipae_mediaCO2$D
-      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
-      min = trunc (escala [1] -100)
-      max = trunc (escala [2] + 100)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
-
-      plot (media_co2~nivel, data=pipae_mediaCO2,
-            type="n",
-            ylab=expression("Mean" ~ CO[2] ~ "ppm"), xlab= "Days",
-            main="CO\u2082\nmean by day",
-            ylim = c(min, max),
-            xlim=c(0,30))
-
-      lines(media_co2~nivel, data=pipae_mediaCO2,
-            lty = 5, lwd =4,
-            col = "gray60")
-    } else {
-      pipae_mediaCO2$nivel=pipae_mediaCO2$M
-      escala = range(pipae_mediaCO2$media_co2, na.rm = TRUE)
-      min = trunc (escala [1] - 100)
-      max = trunc (escala [2] + 100)
-
-      plot (media_co2~nivel, data=pipae_mediaCO2,
-            type="n",
-            ylab=expression("Mean" ~ CO[2] ~ "ppm"),
-            xlab= "Months",
-            main="CO\u2082\nmean by month",
-            ylim = c(min, max) ,xlim=c(1,12))
-
-      lines(media_co2 ~nivel, data=pipae_mediaCO2 ,
-            lty = 5, lwd =4,
-            col = "gray60")
-    }
+    plot_ly(data=pipae_mediaCO2,
+            x=~nivel_var,
+            y=~media_co2,
+            color=~parcela,
+            type="scatter",
+            mode="lines") |>
+      layout(title= paste ("CO\u2082 mean by",
+                           date, sep = " "),
+             xaxis = list(title = var),
+             yaxis = list(title = 'Mean CO\u2082 ppm'),
+             plot_bgcolor = "gray95")
 
 
-  }, res= 96)
+  })
 
-  output$pressID <- renderPlot({
-
-    pipae_all = pipae_all [pipae_all$parcela ==  input$parpress,]
+  output$pressID <- renderPlotly({
 
     if (input$nivelpress == "H") {
 
@@ -327,90 +231,73 @@ server <- function(input, output, session) {
                                          time=pipae_all$Time,
                                          media_nivel = input$nivelpress,
                                          variavel = "pressao")
-    par(bty ="n", bg = "grey99", las =1,
-        family="serif")
-
 
     if (input$nivelpress == "H"){
-      pipae_mediapress$nivel= pipae_mediapress$H
-      escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
-      min = round (escala [1] - 0.25, 2)
-      max = round (escala [2] + 0.25, 2)
-      if (nrow(pipae_mediapress) == 0) {
+      pipae_mediapress$nivelpress= pipae_mediapress$H } else if (
+        input$nivelpress == "D"){
+        pipae_mediapress$nivelpress= pipae_mediapress$D} else {
+          pipae_mediapress$nivelpress= pipae_mediapress$M
+        }
+    if (nrow(pipae_mediapress) == 0) {
         stop (safeError(
           "\n No data collection for that date\n use another date")
         )
-      }
-
-      plot (media_pressao~nivel, data=pipae_mediapress,
-            type="n",
-            ylab="Mean Pressure", xlab= "Hours",
-            main="Pressure\nmean by hour",
-            ylim = c(min, max),
-            xlim=c(0,23))
-
-      lines(media_pressao~nivel, data=pipae_mediapress,
-            lty = 5, lwd =4,
-            col = "pink")
-
-
-    } else if (input$nivelpress == "D") {
-           pipae_mediapress$nivel= pipae_mediapress$D
-      escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
-      min = round(escala [1] -0.25, 2)
-      max = round (escala [2] + 0.25,2)
-      if (is.finite(min) == FALSE | is.finite(max) == FALSE) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
-
-      plot (media_pressao~nivel, data=pipae_mediapress,
-            type="n",
-            ylab=expression("Mean Pressure"), xlab= "Days",
-            main="Pressure\nmean by day",
-            ylim = c(min, max),
-            xlim=c(0,30))
-
-      lines(media_pressao~nivel, data=pipae_mediapress,
-            lty = 5, lwd =4,
-            col = "pink")
-    } else {
-      pipae_mediapress$nivel=pipae_mediapress$M
-      escala = range(pipae_mediapress$media_pressao, na.rm = TRUE)
-      min = round (escala [1] - 0.25, 2)
-      max = round (escala [2] + 0.25, 2)
-
-      plot (media_pressao~nivel, data=pipae_mediapress,
-            type="n",
-            ylab=expression("Mean" ~ CO[2] ~ "ppm"),
-            xlab= "Months",
-            main="CO\u2082\nmean by month",
-            ylim = c(min, max) ,xlim=c(1,12))
-
-      lines(media_pressao ~nivel, data=pipae_mediapress ,
-            lty = 5, lwd =4,
-            col = "pink")
     }
+    date <- switch (input$nivelpress,
+                    "H"="Day",
+                    "D"="Month",
+                    "M"="Year")
+    var <- switch (input$nivelpress,
+                   "H" = "Hour",
+                   "D" = "Day",
+                   "M" = "Month")
+
+    names (pipae_mediapress)[1] <- "nivel_var"
+
+    plot_ly(data=pipae_mediapress,
+            x=~nivel_var,
+            y=~media_pressao,
+            color=~parcela,
+            type="scatter",
+            mode="lines") |>
+      layout(title= paste ("Atmospheric Pressure mean by",
+                           date, sep = " "),
+             xaxis = list(title = var),
+             yaxis = list(title = 'Atmospheric Pressure Pa'),
+             plot_bgcolor = "gray95")
+
+  })
+
+  output$boxplotvarID <-renderPlotly({
+
+    days <- input$dayvar
+
+    if (input$intervalday_var == "to") {
+      max=range (days) [2]
+      min=range (days) [1]
+      days = c (min:max)
+    }else {days <- as.integer(days)}
+
+    month <- input$monthvar
+
+    if (input$intervalmonth_var == "to") {
+      max=range (month) [2]
+      min=range (month) [1]
+      month = c (min:max)
+    }else {month <- as.integer(month)}
+
+    year <- input$yearvar
+
+    if (input$intervalyear_var == "to") {
+      max=range (year) [2]
+      min=range (year) [1]
+      year = c (min:max)
+    }else {year <- as.integer(year)}
 
 
-  }, res= 96)
-
-  output$boxplotvarID <-renderPlot({
-
-    parcels <- input$parVar
-    result <- data.frame()
-    if (length (parcels)==0) {
-      stop (safeError(
-        "\n Select a parcel")
-      )
-    }
-    for (parcel in parcels) {
-      result <- rbind(result, pipae_all[pipae_all$parcela == parcel, ])
-    }
-
-
-    pipae_all <- result
+    pipae_all <- pipae_all [ pipae_all$D == days &
+                              pipae_all$M == month &
+                              pipae_all$Y == year,]
 
 
     names (pipae_all)[c(3,4,5,6,17)] <-  c("temp",
@@ -418,53 +305,83 @@ server <- function(input, output, session) {
                                           "umi",
                                           "CO2",
                                           "parcel")
-    vars <- input$var
+    variavel <- switch(input$vari,
+           temp="temp",
+           bar="bar",
+           umi="umi",
+           CO2="CO2")
 
-    if (length(vars) > 0) {
-      par(mfrow = c(1,length(vars)), bty = "n",
-          bg = "grey99", family="serif")
-      col = colorRampPalette(c("darkred", "lightblue"))
-      for (var in vars) {
-        boxplot(as.formula(paste(var, "~ parcel")),
-                data = pipae_all, main = var, col =
-                  col(length(unique(pipae_all$parcel))),
-                pch="*")
+    name_var <- switch(input$vari,
+                       temp="Temperature",
+                       bar="Pressure",
+                       umi="Moisture",
+                       CO2="CO\u2082")
+    unit <- switch(input$vari,
+                   temp="ºC",
+                   bar="Pa",
+                   umi="%",
+                   CO2="ppm")
 
-        }
+    plot_ly(data= pipae_all,
+            type = "box",
+            x= ~parcel,
+            y= as.formula(paste0("~", variavel)),
+            color=~parcel) |>
+    layout(title= paste ("Boxplot ",name_var,
+                         "\n ",sep = " "),
+           xaxis = list(title = "Parcel"),
+           yaxis = list(title = paste (name_var,
+                                       unit, sep = " ")),
+           plot_bgcolor = "gray95")
 
-    }
-  }, res = 96)
+  })
 
   output$table <- renderDataTable({
     pipaes <- c(unique(pipae_all$tag))
     status <- data.frame()
+    now <- Sys.time()
+    last_24h <- now - hours(24)
+
     for (pipae in pipaes) {
       sensor=pipae_all [pipae_all$tag==pipae,]
-      diff <- time_length(Sys.Date()-
-                            sensor$Date [length(sensor$Date)],
-                          unit="day")
+      time <- sensor$DateTime [length(sensor$DateTime)]
+      int <- interval(Sys.time(),time)
+      diff <- time_length (int, "hour")
+      diff <- abs(diff)
+
       if (is.na(diff)) {
         next
       }
 
-      if (diff > 0) {
+      if (diff > 24) {
+
+        packs <- sensor %>%
+          filter(DateTime >= now - hours(24), DateTime <= now) %>%
+          nrow()
+
         test <- data.frame(sensor=as.character (pipae),
                            dias=as.character(sensor$Date [length(sensor$Date)]),
                            parcela=unique (sensor$parcela),
                            status="No",
-                           packs=dim(sensor[sensor$Date==Sys.Date(),])[1])
+                           packs=packs)
+
+
       }else {
+        packs <- sensor %>%
+          filter(DateTime >= now - hours(24), DateTime <= now) %>%
+          nrow()
+
         test  <- data.frame(sensor=as.character (pipae),
                             dias=as.character(sensor$Date [length(sensor$Date)]),
                             parcela=unique (sensor$parcela),
                             status="Yes",
-                            packs=dim(sensor[sensor$Date==Sys.Date(),])[1])
+                            packs=packs)
       }
       status <-  rbind(status,test)
     }
     names (status) <- c("Sensor","Last Received",
                         "Parcel","Working",
-                        paste ("Sample size", "on", Sys.Date(), sep = " "))
+                        "Sample size at the last 24 hours")
     status
   })
 

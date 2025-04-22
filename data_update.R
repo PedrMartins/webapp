@@ -6,7 +6,7 @@ import_pipae <-  function(pipae = NULL){
                 #"pipae3"="https://docs.google.com/spreadsheets/d/e/2PACX-1vSgEviRT5URoJqohwPc4m-HuNkwkqy9TVDOVnDsu7x0hyNYJvLPlc_B9y3TrEqNf1fhe6fPensFXlOH/pub?output=csv",
                 "pipae5"="https://docs.google.com/spreadsheets/d/e/2PACX-1vQqKltuW8wrgqbU7_y8_sqTFl0LzZrQda8vMoerhvJkgC0x7H6DE3ZmnWROEML8tnfVBCoBLXUgwZHW/pub?output=csv",
                 "pipae7"="https://docs.google.com/spreadsheets/d/e/2PACX-1vTdOc4PMg1xC0qpUceE6BZV8L1oLn8D5zf-dALqqWiEQZBFJH23dzPiqwn7NOlFowHEis1N4eb7JvFZ/pub?output=csv",
-                #"pipae8"="https://docs.google.com/spreadsheets/d/e/2PACX-1vRezDFvNifmWuJUoVIIhyazBaD281lsr4qeV3EWROGEUH8CDBD01riMOWMfDbsPH0Z8wFkEmtQRbfEC/pub?output=csv",
+                "pipae8"="https://docs.google.com/spreadsheets/d/e/2PACX-1vRezDFvNifmWuJUoVIIhyazBaD281lsr4qeV3EWROGEUH8CDBD01riMOWMfDbsPH0Z8wFkEmtQRbfEC/pub?output=csv",
                 "pipae9"="https://docs.google.com/spreadsheets/d/e/2PACX-1vQtwvqsZbeuuR-u18YXmgkFYPzCjd0qYGJ-oX0pNx6o6wfcS1mb140y3YNzuGYrrUVnVebdFVUf8Tss/pub?output=csv",
                 "pipae10"="https://docs.google.com/spreadsheets/d/e/2PACX-1vTFwcv50LDoLD0EVEV_r423wSCU6KI8gN-7wjmhZAhaWvgTUL3BeyPiAEzEWS_cHzCsAQkg6r3ssOPt/pub?output=csv",
                 "pipae11"="https://docs.google.com/spreadsheets/d/e/2PACX-1vSZP1CXjEgzUE0Apxx4fNK81x5711ex1ZED7wWnboy2XFe6RIUXmmXY7CSyXRC7SR6WaztfSsSjlv5n/pub?output=csv",
@@ -14,7 +14,7 @@ import_pipae <-  function(pipae = NULL){
                 )
 
   #sensores <- paste("pipae",seq(1, length(source)), sep="")
-  sensores <- paste("pipae", c(1:2,5,7,9:12), sep="")
+  sensores <- paste("pipae", c(1:2,5,7:12), sep="")
   if (is.null(pipae)==TRUE) {stop ("inclua sensores")}
 
   if (length(setdiff(pipae,sensores))!= 0) {
@@ -47,7 +47,7 @@ import_pipae <-  function(pipae = NULL){
                         length(site$CO2_ppm))
         site$parcela = rep ("par1", length(site$CO2_ppm))
       } else if (names(source[i]) %in%
-                 c(paste("pipae", c(7),sep=""))) {
+                 c(paste("pipae", c(7,8),sep=""))) {
         site$tag = rep (names(source[i]),
                         length(site$CO2_ppm))
         site$parcela = rep ("par3", length(site$CO2_ppm))
@@ -78,7 +78,7 @@ import_pipae <-  function(pipae = NULL){
 
 
 pipae_all=import_pipae(pipae=paste0(
-                              "pipae", c(1:2,5,7,9:12)
+                              "pipae", c(1:2,5,7:12)
                               )
                        )
 

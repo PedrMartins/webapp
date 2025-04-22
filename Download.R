@@ -39,21 +39,12 @@ Download <- tabPanel("Download Data",
                                                   "Barometer"="pressao",
                                                   "All Variables"="no_one"),
                                       selected = "no_one"),
-                         width = 2
+                         width = 3
                        ), #sidebarpanel end
                        mainPanel (
-                         tabsetPanel(type="tab",
-                          tabPanel ("Preview Chart",
-                                    plotOutput (outputId = "plotDown"),
-                                    downloadButton("downplot","Download Plot",
-                                                   class = "custom-download-btn")
-                                    ),
-                          tabPanel ("Preview Table",
-                                    dataTableOutput(outputId="tableDown"),
-                                    downloadButton("downtab","Download Data",
-                                                   class = "custom-download-btn")
-                                    )
-                         )
+                         dataTableOutput(outputId="tableDown"),
+                         downloadButton("downtab","Download Data",
+                                        class = "custom-download-btn")
                        )#mainplanel end
                      ) #sidebar layout end
 ) #tabpanel2 end co2

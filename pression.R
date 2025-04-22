@@ -22,16 +22,10 @@ Pression <- tabPanel("Barometer",
                                 choices = unique(pipae_all$Y),
                                 selected = year(Sys.Date()),
                                 width = "100px"),
-                    radioButtons(inputId= "parpress",
-                                 label = "Parcel",
-                                 choiceValues =  sort(unique (pipae_all$parcela)),
-                                 choiceNames = c("Parcel 1", "Parcel 2",
-                                                 "Parcel 3", "Parcel 4"),
-                                 selected = "par1"),
                     width = 2
                   ), #sidebarpanel end
                   mainPanel (
-                    plotOutput (outputId = "pressID")
+                    plotlyOutput (outputId = "pressID")
                   )#mainplanel end
                 ) #sidebar layout end
 ) #tabpanel2 end co2
