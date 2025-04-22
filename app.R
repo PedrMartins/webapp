@@ -50,6 +50,12 @@ server <- function(input, output, session) {
                                 pipae_all$Y == input$year,]
     }
 
+    if (nrow(pipae_all) == 0) {
+      stop (safeError(
+        "\n No data collection for that date")
+      )
+    }
+
     pipae_mediatemperatura = get_dados_separados(pipae_all,
                                                  pipae_all$Temperature,
                                                  date= pipae_all$Date,
@@ -63,11 +69,6 @@ server <- function(input, output, session) {
         pipae_mediatemperatura$nivel= pipae_mediatemperatura$D
       } else {pipae_mediatemperatura$nivel= pipae_mediatemperatura$M}
 
-      if (nrow(pipae_mediatemperatura) == 0) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
 
       date <- switch (input$nivel,
               "H"="Day",
@@ -109,6 +110,12 @@ server <- function(input, output, session) {
                           pipae_all$Y == input$yearmoisture,]
     }
 
+    if (nrow(pipae_all) == 0) {
+      stop (safeError(
+        "\n No data collection for that date")
+      )
+    }
+
     pipae_mediaumidade = get_dados_separados(pipae_all, pipae_all$Humidity,
                                              date= pipae_all$Date,
                                              time=pipae_all$Time,
@@ -121,12 +128,6 @@ server <- function(input, output, session) {
         pipae_mediaumidade$nivelmoisture= pipae_mediaumidade$D}else{
           pipae_mediaumidade$nivelmoisture= pipae_mediaumidade$M
         }
-
-      if (nrow(pipae_mediaumidade) == 0) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
 
     date <- switch (input$nivelmoisture,
                     "H"="Day",
@@ -168,6 +169,12 @@ server <- function(input, output, session) {
                           pipae_all$Y == input$yearco2,]
     }
 
+    if (nrow(pipae_all) == 0) {
+      stop (safeError(
+        "\n No data collection for that date")
+      )
+    }
+
     pipae_mediaCO2 = get_dados_separados(pipae_all, pipae_all$CO2_ppm,
                                          date= pipae_all$Date,
                                          time=pipae_all$Time,
@@ -180,11 +187,6 @@ server <- function(input, output, session) {
           pipae_mediaCO2$nivelco2= pipae_mediaCO2$M
         }
 
-      if (nrow(pipae_mediaCO2) == 0) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-      }
     date <- switch (input$nivelco2,
                     "H"="Day",
                     "D"="Month",
@@ -224,6 +226,11 @@ server <- function(input, output, session) {
       pipae_all = pipae_all [ pipae_all$M == input$monthpres &
                                 pipae_all$Y == input$yearpres,]
     }
+    if (nrow(pipae_all) == 0) {
+      stop (safeError(
+        "\n No data collection for that date")
+      )
+    }
 
     pipae_mediapress = get_dados_separados(pipae_all,
                                          pipae_all$Pressure,
@@ -238,11 +245,7 @@ server <- function(input, output, session) {
         pipae_mediapress$nivelpress= pipae_mediapress$D} else {
           pipae_mediapress$nivelpress= pipae_mediapress$M
         }
-    if (nrow(pipae_mediapress) == 0) {
-        stop (safeError(
-          "\n No data collection for that date\n use another date")
-        )
-    }
+
     date <- switch (input$nivelpress,
                     "H"="Day",
                     "D"="Month",
