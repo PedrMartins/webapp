@@ -79,6 +79,11 @@ server <- function(input, output, session) {
         "D" = "Day",
         "M" = "Month")
 
+     pipae_mediatemperatura$parcela <- recode(pipae_mediatemperatura$parcela,
+                                               "par1"= "Parcel 1",
+                                               "par2"="Parcel 2",
+                                               "par3"="Parcel 3",
+                                               "par4"="Parcel 4")
 
      names (pipae_mediatemperatura)[1] <- "nivel_var"
 
@@ -93,7 +98,11 @@ server <- function(input, output, session) {
                            date, sep = " "),
              xaxis = list(title = var),
              yaxis = list(title = 'Mean Temperature ºC'),
-             plot_bgcolor = "gray95")
+             plot_bgcolor = "gray95",
+             legend= list(
+               title=list(
+                 text= '<b> Parcels </b>'))
+             )
 
   })
 
@@ -139,6 +148,14 @@ server <- function(input, output, session) {
                    "H" = "Hour",
                    "D" = "Day",
                    "M" = "Month")
+
+    pipae_mediaumidade$parcela <- recode(pipae_mediaumidade$parcela,
+                                             "par1"= "Parcel 1",
+                                             "par2"="Parcel 2",
+                                             "par3"="Parcel 3",
+                                             "par4"="Parcel 4")
+
+
     names (pipae_mediaumidade)[1] <- "nivel_var"
 
 
@@ -147,12 +164,17 @@ server <- function(input, output, session) {
               y=~media_umidade,
               color=~parcela,
               type="scatter",
-              mode="lines") |>
+              mode="lines+markers",
+              marker = list(symbol="diamond")) |>
         layout(title= paste ("Moiture mean by",
                              date, sep = " "),
                xaxis = list(title = var),
                yaxis = list(title = 'Mean Moiture %'),
-               plot_bgcolor = "gray95")
+               plot_bgcolor = "gray95",
+               legend= list(
+                 title=list(
+                   text= '<b> Parcels </b>'))
+               )
 
   })
 
@@ -197,6 +219,12 @@ server <- function(input, output, session) {
                    "D" = "Day",
                    "M" = "Month")
 
+    pipae_mediaCO2$parcela <- recode(pipae_mediaCO2$parcela,
+                                         "par1"= "Parcel 1",
+                                         "par2"="Parcel 2",
+                                         "par3"="Parcel 3",
+                                         "par4"="Parcel 4")
+
     names (pipae_mediaCO2)[1] <- "nivel_var"
 
     plot_ly(data=pipae_mediaCO2,
@@ -204,12 +232,17 @@ server <- function(input, output, session) {
             y=~media_co2,
             color=~parcela,
             type="scatter",
-            mode="lines") |>
+            mode="lines+markers",
+            marker = list(symbol="diamond")) |>
       layout(title= paste ("CO\u2082 mean by",
                            date, sep = " "),
              xaxis = list(title = var),
              yaxis = list(title = 'Mean CO\u2082 ppm'),
-             plot_bgcolor = "gray95")
+             plot_bgcolor = "gray95",
+             legend= list(
+               title=list(
+                 text= '<b> Parcels </b>'))
+             )
 
 
   })
@@ -256,6 +289,12 @@ server <- function(input, output, session) {
                    "D" = "Day",
                    "M" = "Month")
 
+  pipae_mediapress$parcela <- recode(pipae_mediapress$parcela,
+                                         "par1"= "Parcel 1",
+                                         "par2"="Parcel 2",
+                                         "par3"="Parcel 3",
+                                         "par4"="Parcel 4")
+
     names (pipae_mediapress)[1] <- "nivel_var"
 
     plot_ly(data=pipae_mediapress,
@@ -263,12 +302,17 @@ server <- function(input, output, session) {
             y=~media_pressao,
             color=~parcela,
             type="scatter",
-            mode="lines") |>
+            mode="lines+markers",
+            marker = list(symbol="diamond")) |>
       layout(title= paste ("Atmospheric Pressure mean by",
                            date, sep = " "),
              xaxis = list(title = var),
              yaxis = list(title = 'Atmospheric Pressure Pa'),
-             plot_bgcolor = "gray95")
+             plot_bgcolor = "gray95",
+             legend= list(
+               title=list(
+                 text= '<b> Parcels </b>'))
+             )
 
   })
 
@@ -317,14 +361,21 @@ server <- function(input, output, session) {
 
     name_var <- switch(input$vari,
                        temp="Temperature",
-                       bar="Pressure",
+                       bar="Atmospheric Pressure",
                        umi="Moisture",
                        CO2="CO\u2082")
+
     unit <- switch(input$vari,
                    temp="ºC",
                    bar="Pa",
                    umi="%",
                    CO2="ppm")
+
+    pipae_all$parcel <- recode(pipae_all$parcel,
+                                       "par1"= "Parcel 1",
+                                       "par2"="Parcel 2",
+                                       "par3"="Parcel 3",
+                                       "par4"="Parcel 4")
 
     plot_ly(data= pipae_all,
             type = "box",
@@ -336,7 +387,11 @@ server <- function(input, output, session) {
            xaxis = list(title = "Parcel"),
            yaxis = list(title = paste (name_var,
                                        unit, sep = " ")),
-           plot_bgcolor = "gray95")
+           plot_bgcolor = "gray95",
+           legend= list(
+             title=list(
+               text= '<b> Parcels </b>'))
+           )
 
   })
 
