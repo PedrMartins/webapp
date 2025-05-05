@@ -34,6 +34,7 @@ click on log on topright on your screen.
 >For more details use this [page](https://shiny.posit.co/r/articles/) to learning about the package possibilities.
 >##### On this site you'll learn how:
 > - Debuging your code
+>   - The function `browser()` will be very usefull for the buging propouse 
 > - Improve the scale of your application
 > - Deploy your web application
 
