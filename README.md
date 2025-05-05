@@ -15,6 +15,7 @@ In this application, the user interface are building using the `ui` object. Insi
 - [temperatura.R](https://github.com/PedrMartins/webapp/blob/master/temperatura.R)
 - [umidade.R](https://github.com/PedrMartins/webapp/blob/master/umidade.R)
 - [variable.R](https://github.com/PedrMartins/webapp/blob/master/variable.R)
+  - All the plots above are building using Plotly package for more details you can watch this [videos](https://www.youtube.com/watch?v=xerW2TvZHbQ&list=PLu6UwBFCnlEd2NazdWqG4htJ8PQjk28Xp)
 - [Download.R](https://github.com/PedrMartins/webapp/blob/master/Download.R)
 
 Other mainly object use for this application is the `server ()` function that was wrote in the main R script.
