@@ -8,7 +8,7 @@ The main script in this repository is the [app.R](https://github.com/PedrMartins
 in these repository you'll find the code that run the front-end (ui) and the back-end (server) 
 to combine front and back you must to use the `shinyApp ()` function as the example bellow.
 
-In this application, the user interface are building using the `ui` object. Inside this object we build 5 objects:
+In this application, the user interface are building using the `ui` object. Inside this object we build 6 objects:
 
 - [pression.R](https://github.com/PedrMartins/webapp/blob/master/pression.R)
 - [co2.R](https://github.com/PedrMartins/webapp/blob/master/co2.R)
@@ -17,8 +17,17 @@ In this application, the user interface are building using the `ui` object. Insi
 - [variable.R](https://github.com/PedrMartins/webapp/blob/master/variable.R)
 - [Download.R](https://github.com/PedrMartins/webapp/blob/master/Download.R)
 
+Other mainly object use for this application is the `server ()` function that was wrote in the main R script.
 
-` shinyApp (ui=ui, server=server) `
+the ` shinyApp (ui=ui, server=server) ` will run the application. 
+
+other key srcipts are:
+- [library_package.R](https://github.com/PedrMartins/webapp/blob/master/library_package.R)
+  - This script will download all the packages requested and open them in the work directory using the `library ()` fiunction.
+- [data_update.R](https://github.com/PedrMartins/webapp/blob/master/data_update.R)
+  - Here the mainly function of this script you will download the data that are being sesoring by Pipaes on field.
+- [funcao_processamento.R](https://github.com/PedrMartins/webapp/blob/master/funcao_processamento.R)
+  - In this script all key functions are build for the better working of the application.
 
 For more code examples run the lines bellow
 
