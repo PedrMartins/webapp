@@ -15,6 +15,7 @@ In this application, the user interface are building using the `ui` object. Insi
 - [temperatura.R](https://github.com/PedrMartins/webapp/blob/master/temperatura.R)
 - [umidade.R](https://github.com/PedrMartins/webapp/blob/master/umidade.R)
 - [variable.R](https://github.com/PedrMartins/webapp/blob/master/variable.R)
+- [Download.R](https://github.com/PedrMartins/webapp/blob/master/Download.R)
 
 
 ` shinyApp (ui=ui, server=server) `
