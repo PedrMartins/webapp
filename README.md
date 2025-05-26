@@ -1,12 +1,12 @@
 # IoTree Web application 
 
-This application on web was build on R language using shiny package. To understand how build
+This application on web was build using R language and shiny package. To understand how build
 or improve this application you can follow this tutorial on [youtube](https://www.youtube.com/watch?v=9uFQECk30kA&t=1273s) 
 or in this [ebook](https://mastering-shiny.org/).
 
 The main script in this repository is the [app.R](https://github.com/PedrMartins/webapp/blob/master/app.R), 
 in these repository you'll find the code that run the front-end (ui) and the back-end (server) 
-to combine front and back you must to use the `shinyApp ()` function as the example bellow.
+to combine front and back you must use the `shinyApp ()`.
 
 In this application, the user interface are building using the `ui` object. Inside this object we build 6 objects:
 
@@ -22,7 +22,7 @@ Other mainly object use for this application is the `server ()` function that wa
 
 the ` shinyApp (ui=ui, server=server) ` will run the application. 
 
-other key srcipts are:
+Other key srcipts are:
 - [library_package.R](https://github.com/PedrMartins/webapp/blob/master/library_package.R)
   - This script will download all the packages requested and open them in the work directory using the `library ()` fiunction.
 - [data_update.R](https://github.com/PedrMartins/webapp/blob/master/data_update.R)
@@ -47,11 +47,11 @@ runExample("11_timer")      # an automated timer
 ```
 
 
-The web app are deployed on [shiny.io](https://www.shinyapps.io/)
+The web app are deployed on [shinyapp.io](https://www.shinyapps.io/)
 
 >To debug web aplications you might use the log session. To access the log you have to click on your application, and then, 
 click on log on topright on your screen.
->For more details use this [page](https://shiny.posit.co/r/articles/) to learning about the package possibilities.
+>For more details use this [page](https://shiny.posit.co/r/articles/) to learning about the package and their possibilities.
 >##### On this site you'll learn how:
 > - Debuging your code
 >   - The function `browser()` will be very usefull for the buging propouse 
